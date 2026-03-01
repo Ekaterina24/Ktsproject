@@ -23,7 +23,7 @@ fun MainScreen(
     loadPosts: () -> Unit
 ) {
 
-    LaunchedEffect(state.list) {
+    LaunchedEffect(Unit) {
         loadPosts()
     }
 
