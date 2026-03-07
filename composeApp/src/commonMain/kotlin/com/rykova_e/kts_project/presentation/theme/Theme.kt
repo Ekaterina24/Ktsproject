@@ -1,4 +1,4 @@
-package com.rykova_e.kts_project.theme
+package com.rykova_e.kts_project.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,25 +15,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val DarkColorScheme = darkColorScheme()
-private val LightColorScheme = lightColorScheme()
+private val DarkColorScheme = darkColorScheme(
+    onSecondary = md_theme_light_onSecondary,
+    background = md_theme_dark_background,
+    surfaceTint = md_theme_dark_surfaceTint
+)
+private val LightColorScheme = lightColorScheme(
+    onSecondary = md_theme_dark_onSecondary,
+    background = md_theme_light_background,
+    surfaceTint = md_theme_light_surfaceTint
+)
 
 val MaterialAppTypography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
-    ),
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-    ),
-    bodySmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-    ),
+        fontSize = 16.sp
+    )
 )
 
 val MaterialAppShapes = Shapes(
@@ -43,8 +41,6 @@ val MaterialAppShapes = Shapes(
     large = RoundedCornerShape(16.dp),
     extraLarge = RoundedCornerShape(28.dp),
 )
-
-val BlueColor = Color(0xFF4680C2)
 
 @Composable
 fun AppThemeMaterial(

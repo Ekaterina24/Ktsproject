@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rykova_e.kts_project.theme.BlueColor
+import com.rykova_e.kts_project.presentation.theme.BlueColor
 import ktsproject.composeapp.generated.resources.Res
 import ktsproject.composeapp.generated.resources.hide_password
 import ktsproject.composeapp.generated.resources.show_password

@@ -1,4 +1,4 @@
-package com.rykova_e.kts_project.navigation
+package com.rykova_e.kts_project.presentation.ui.navigation
 
 sealed class Screen(val route: String) {
 
