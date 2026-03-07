@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class MainViewModel: ViewModel() {
@@ -37,7 +38,7 @@ class MainViewModel: ViewModel() {
             _searchFlow
                 .debounce(300L)
                 .distinctUntilChanged()
-                .collectLatest { search ->
+                .collect { search ->
                     loadAndSearchCourses(search)
                 }
         }
@@ -81,6 +82,7 @@ class MainViewModel: ViewModel() {
                     }
                 }
             }.onFailure { error ->
+                if (error is CancellationException) throw error
                 _state.update { it.copy(error = "Ошибка при получении курсов") }
                 Napier.e("LoadCourses error", error, tag = "Network")
                 _state.update {
