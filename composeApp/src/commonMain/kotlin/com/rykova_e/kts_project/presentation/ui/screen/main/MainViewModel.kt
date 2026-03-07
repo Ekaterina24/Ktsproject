@@ -64,18 +64,18 @@ class MainViewModel: ViewModel() {
                 if (_searchFlow.value.isNotEmpty()) {
                     _state.update {
                         it.copy(
-                            courses = (coursesWrapper as WrapperSearchCoursesModel).courses,
+                            courses = (coursesWrapper as? WrapperSearchCoursesModel)?.courses ?: emptyList(),
                             isLoading = false,
-                            hasNextPage = coursesWrapper.metaData.has_next,
+                            hasNextPage = (coursesWrapper as? WrapperSearchCoursesModel)?.metaData?.has_next ?: false,
                             currentPage = 1,
                         )
                     }
                 } else {
                     _state.update {
                         it.copy(
-                            courses = (coursesWrapper as WrapperCoursesModel).courses,
+                            courses = (coursesWrapper as? WrapperCoursesModel)?.courses ?: emptyList(),
                             isLoading = false,
-                            hasNextPage = coursesWrapper.metaData.has_next,
+                            hasNextPage = (coursesWrapper as? WrapperCoursesModel)?.metaData?.has_next ?: false,
                             currentPage = 1,
                         )
                     }
@@ -117,18 +117,18 @@ class MainViewModel: ViewModel() {
                 if (_searchFlow.value.isNotEmpty()) {
                     _state.update {
                         it.copy(
-                            courses = it.courses + (result as WrapperSearchCoursesModel).courses,
+                            courses = it.courses + ((result as? WrapperSearchCoursesModel)?.courses ?: emptyList()),
                             isLoadingMore = false,
-                            hasNextPage = result.metaData.has_next,
+                            hasNextPage = (result as? WrapperSearchCoursesModel)?.metaData?.has_next ?: false,
                             currentPage = nextPage,
                         )
                     }
                 } else {
                     _state.update {
                         it.copy(
-                            courses = it.courses + (result as WrapperCoursesModel).courses,
+                            courses = it.courses + ((result as? WrapperCoursesModel)?.courses ?: emptyList()),
                             isLoadingMore = false,
-                            hasNextPage = result.metaData.has_next,
+                            hasNextPage = (result as? WrapperCoursesModel)?.metaData?.has_next ?: false,
                             currentPage = nextPage,
                         )
                     }
