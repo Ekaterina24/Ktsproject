@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -31,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rykova_e.kts_project.presentation.theme.BlueColor
+import com.rykova_e.kts_project.presentation.ui.component.CircularProgressBarCustom
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginStateEvent
 import com.rykova_e.kts_project.presentation.ui.screen.login.platform.AuthLauncher
 import com.rykova_e.kts_project.presentation.ui.screen.login.platform.LoginEventsHandler
@@ -59,7 +59,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (state.isLoading) CircularProgressIndicator()
+            if (state.isLoading) CircularProgressBarCustom()
             Text(
                 text = "Авторизуйтесь в аккаунте",
                 fontSize = 24.sp,

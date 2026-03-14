@@ -1,13 +1,13 @@
 package com.rykova_e.kts_project.presentation.ui.screen.login
 
 import androidx.lifecycle.viewModelScope
-import com.rykova_e.kts_project.data.auth.TokenStorage
+import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
+import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.domain.repository.PlatformAuthService
 import com.rykova_e.kts_project.domain.repository.PlatformIntent
 import com.rykova_e.kts_project.domain.use_case.AuthUseCase
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginStateEvent
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginUiEvent
-import com.rykova_e.kts_project.presentation.ui.screen.login.LoginUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,7 +59,8 @@ class LoginViewModelCommon(
     private val toastChannel: PlatformChannel<String>,
     private val openAuthPageChannel: PlatformChannel<PlatformIntent>,
     private val authSuccessChannel: PlatformChannel<Unit>,
-    private val customTabsIntentProvider: (() -> Any?)? = null
+    private val customTabsIntentProvider: (() -> Any?)? = null,
+    private val dataStore: SettingsStorage = DataStoreSettingsStorage()
 ) : LoginViewModel() {
 
     private val _state = MutableStateFlow(LoginUiState())
@@ -87,9 +88,8 @@ class LoginViewModelCommon(
                     platformAuthService,
                     _state.value.code
                 )
-                TokenStorage.accessToken = tokens.accessToken
-                TokenStorage.refreshToken = tokens.refreshToken
-                TokenStorage.idToken = tokens.idToken
+                dataStore.saveAccessToken(tokens.accessToken)
+                dataStore.saveRefreshToken(tokens.refreshToken)
             }.onSuccess {
                 _loadingFlow.value = false
                 _events.emit(LoginUiEvent.LoginSuccessEvent)

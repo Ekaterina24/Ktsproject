@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.rykova_e.kts_project.presentation.theme.BlueColor
+import com.rykova_e.kts_project.presentation.ui.component.CircularProgressBarCustom
 import com.rykova_e.kts_project.presentation.ui.component.CourseCardUI
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -122,13 +122,11 @@ fun CourseListScreen(
                 )
                 if (state.isLoading) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(
+                        CircularProgressBarCustom(
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .size(50.dp)
-                                .fillMaxSize(),
-                            color = BlueColor,
-                            strokeWidth = 5.dp
+                                .fillMaxSize()
                         )
                     }
                 } else {
@@ -207,7 +205,7 @@ fun CourseListScreen(
                                         .padding(16.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    CircularProgressIndicator()
+                                    CircularProgressBarCustom()
                                 }
                             }
                         }

@@ -1,4 +1,4 @@
-package com.rykova_e.kts_project.presentation.ui.screen.greeting
+package com.rykova_e.kts_project.presentation.ui.screen.onboarding
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,7 +26,7 @@ import coil3.compose.AsyncImage
 import com.rykova_e.kts_project.presentation.theme.BlueColor
 
 @Composable
-fun GreetingScreen(
+fun OnBoardingScreen(
     navigateToLoginScreen: () -> Unit
 ) {
     Scaffold { paddingValues ->
@@ -84,8 +84,8 @@ fun GreetingScreen(
 
 @Preview
 @Composable
-private fun GreetingScreenPreview() {
-    GreetingScreen(
+private fun OnBoardingScreenPreview() {
+    OnBoardingScreen(
         navigateToLoginScreen = {}
     )
 }
