@@ -2,6 +2,7 @@ package com.rykova_e.kts_project.data.source.remote
 
 import com.rykova_e.kts_project.data.mapper.toDto
 import com.rykova_e.kts_project.domain.model.CourseDto
+import com.rykova_e.kts_project.domain.model.ReviewDto
 import com.rykova_e.kts_project.domain.model.WrapperCoursesDto
 import com.rykova_e.kts_project.domain.model.WrapperSearchCoursesDto
 import com.rykova_e.kts_project.domain.repository.CourseRepository
@@ -36,4 +37,18 @@ class CourseRepositoryImpl : CourseRepository {
         return apiService.searchCourses(query, page).toDto()
     }
 
+    override suspend fun getReviewCourse(id: Long): ReviewDto {
+        return apiService.getReviewCourseById(id).reviews.first().toDto()
+    }
+
+    override suspend fun getReviewsByCourseIds(ids: List<Long>): List<ReviewDto> {
+        return coroutineScope {
+            val reviews = ids.map { id ->
+                async {
+                    getReviewCourse(id)
+                }
+            }
+            reviews.awaitAll()
+        }
+    }
 }

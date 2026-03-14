@@ -1,4 +1,4 @@
-package com.rykova_e.kts_project.presentation.ui.screen.login
+package com.rykova_e.kts_project.presentation.ui.screen.login.event
 
 sealed class LoginUiEvent {
 

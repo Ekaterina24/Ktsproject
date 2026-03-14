@@ -8,13 +8,13 @@ import com.rykova_e.kts_project.presentation.ui.mapper.toUI
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import com.rykova_e.kts_project.presentation.ui.model.WrapperCoursesModel
 import com.rykova_e.kts_project.presentation.ui.model.WrapperSearchCoursesModel
+import com.rykova_e.kts_project.utils.roundToDecimal
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
@@ -155,13 +155,23 @@ class MainViewModel: ViewModel() {
         val authors = userRepository.getUsersByIds(authorsId).map { it.toUI() }
         val authorsMap = authors.associateBy { it.id }
 
+        val ratingIds = courses.map { it.rating.toLong() }
+        val reviews = courseRepository.getReviewsByCourseIds(ratingIds)
+        val reviewsMap = reviews.associateBy { it.courseId }
+
         val coursesWithAuthors = courses.map { course ->
             val courseAuthors = course.authors.mapNotNull { author ->
                 authorsMap[author.id]
             }
             course.copy(authors = courseAuthors)
         }
-        return coursesWithAuthors
+
+        val coursesWithReviews = coursesWithAuthors.map { course ->
+            val courseReview = reviewsMap[course.id.toString()]
+            course.copy(rating = courseReview?.averageReview?.roundToDecimal() ?: "")
+        }
+
+        return coursesWithReviews
     }
 
     fun onChangedSearch(value: String) {

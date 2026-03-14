@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.coil.network.okhttp)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.appauth)
         }
         iosMain.dependencies {
             implementation(libs.coil.network.ktor)
@@ -77,6 +78,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        manifestPlaceholders.put("appAuthRedirectScheme", "https")
     }
     packaging {
         resources {

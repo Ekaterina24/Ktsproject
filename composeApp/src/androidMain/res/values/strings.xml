@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Ktsproject</string>
+    <string name="auth_canceled">Аутентификация не выполнена</string>
 </resources>

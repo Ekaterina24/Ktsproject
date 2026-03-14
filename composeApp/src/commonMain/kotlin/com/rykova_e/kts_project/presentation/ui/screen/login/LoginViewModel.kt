@@ -1,49 +1,30 @@
 package com.rykova_e.kts_project.presentation.ui.screen.login
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.rykova_e.kts_project.domain.repository.LoginRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import com.rykova_e.kts_project.domain.repository.PlatformIntent
+import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginStateEvent
+import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginUiEvent
+import com.rykova_e.kts_project.presentation.ui.screen.login.LoginUiState
+import kotlinx.coroutines.channels.ChannelResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class LoginViewModel: ViewModel() {
+abstract class LoginViewModel: ViewModel() {
+    abstract val loadingFlow: StateFlow<Boolean>
+    abstract val toastFlow: Flow<String>
+    abstract val authSuccessFlow: Flow<Unit>
+    abstract val events: SharedFlow<LoginUiEvent?>
+    abstract val state: StateFlow<LoginUiState>
+    abstract val openAuthPageFlow: Flow<PlatformIntent>
 
-    private val loginRepository = LoginRepository()
+    abstract fun login()
+    abstract fun onAuthCodeFailed()
+    abstract fun exchangeCodeForTokens()
+    abstract fun onLoginStateEvent(event: LoginStateEvent)
+}
 
-    private val _state = MutableStateFlow(LoginUiState())
-    val state = _state.asStateFlow()
-
-    private val _events = MutableSharedFlow<LoginUiEvent?>()
-    val events = _events.asSharedFlow()
-
-
-    fun onUsernameChanged(value: String) {
-        _state.update { it.copy(username = value) }
-    }
-
-    fun onPasswordChanged(value: String) {
-        _state.update { it.copy(password = value) }
-    }
-
-    fun login() {
-        viewModelScope.launch {
-            val result = loginRepository.login(
-                username = _state.value.username,
-                password = _state.value.password
-            )
-            if (result.isSuccess) {
-                _events.emit(LoginUiEvent.LoginSuccessEvent)
-            } else if (result.isFailure) {
-                _events.emit(
-                    LoginUiEvent.LoginErrorEvent(
-                        result.exceptionOrNull()?.message ?: "Неизвестная ошибка"
-                    )
-                )
-            }
-        }
-    }
+interface PlatformChannel<T> {
+    fun send(data: T): ChannelResult<Unit>
+    fun receiveAsFlow(): Flow<T>
 }

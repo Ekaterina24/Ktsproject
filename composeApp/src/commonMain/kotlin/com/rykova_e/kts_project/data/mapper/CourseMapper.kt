@@ -2,11 +2,13 @@ package com.rykova_e.kts_project.data.mapper
 
 import com.rykova_e.kts_project.data.source.remote.model.CourseRemote
 import com.rykova_e.kts_project.data.source.remote.model.MetaData
+import com.rykova_e.kts_project.data.source.remote.model.ReviewRemote
 import com.rykova_e.kts_project.data.source.remote.model.SearchItem
 import com.rykova_e.kts_project.data.source.remote.model.SearchWrapper
 import com.rykova_e.kts_project.data.source.remote.model.WrapperCourses
 import com.rykova_e.kts_project.domain.model.CourseDto
 import com.rykova_e.kts_project.domain.model.MetaDataDto
+import com.rykova_e.kts_project.domain.model.ReviewDto
 import com.rykova_e.kts_project.domain.model.SearchDto
 import com.rykova_e.kts_project.domain.model.WrapperCoursesDto
 import com.rykova_e.kts_project.domain.model.WrapperSearchCoursesDto
@@ -50,5 +52,13 @@ fun MetaData.toDto(): MetaDataDto {
         page = this.page,
         has_next = this.has_next,
         has_previous = this.has_previous
+    )
+}
+
+fun ReviewRemote.toDto(): ReviewDto {
+    return ReviewDto(
+        id = this.id,
+        courseId = this.courseId,
+        averageReview = this.averageReview
     )
 }
