@@ -10,7 +10,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
-class CourseRepositoryImpl : CourseRepository {
+class CourseRepositoryImpl: CourseRepository {
 
     private val apiService = ApiService(Networking.httpClient)
 

@@ -11,5 +11,6 @@ data class MainUiState(
     val isLoadingMore: Boolean = false,
     val hasNextPage: Boolean = true,
     val currentPage: Int = 1,
-    val search: String = ""
+    val search: String = "",
+    val isRefreshing: Boolean = false
 )

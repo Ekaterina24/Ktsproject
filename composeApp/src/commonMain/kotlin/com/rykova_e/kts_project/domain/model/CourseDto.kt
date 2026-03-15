@@ -6,7 +6,7 @@ data class CourseDto(
     val description: String,
     val authors: List<Long>,
     val cover: String,
-    val rating: String,
+    val rating: String?,
     val countStudents: Long,
     val duration: Long?,
 )

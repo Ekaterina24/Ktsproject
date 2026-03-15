@@ -8,6 +8,7 @@ import com.rykova_e.kts_project.domain.repository.PlatformIntent
 import com.rykova_e.kts_project.domain.use_case.AuthUseCase
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginStateEvent
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginUiEvent
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,6 +89,7 @@ class LoginViewModelCommon(
                     platformAuthService,
                     _state.value.code
                 )
+                Napier.d("token ${tokens.accessToken}", tag = "TAG")
                 dataStore.saveAccessToken(tokens.accessToken)
                 dataStore.saveRefreshToken(tokens.refreshToken)
             }.onSuccess {

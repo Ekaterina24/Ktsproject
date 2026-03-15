@@ -36,6 +36,8 @@ import com.rykova_e.kts_project.presentation.ui.screen.login.LoginScreen
 import com.rykova_e.kts_project.presentation.ui.screen.main.CourseListScreen
 import com.rykova_e.kts_project.presentation.ui.screen.main.MainViewModel
 import com.rykova_e.kts_project.presentation.ui.screen.onboarding.OnBoardingScreen
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         initContext(this)
+        Napier.base(DebugAntilog())
         setContent {
             AppThemeMaterial {
                 val navController = rememberNavController()
@@ -124,7 +127,7 @@ class MainActivity : ComponentActivity() {
                                     state = state,
                                     loadMore = viewModel::loadMoreCourses,
                                     onChangedSearch = viewModel::onChangedSearch,
-                                    reload = viewModel::reload
+                                    reload = viewModel::reload,
                                 )
                             }
                         }
@@ -133,10 +136,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
 }

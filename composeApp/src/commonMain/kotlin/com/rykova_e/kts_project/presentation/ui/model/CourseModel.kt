@@ -6,7 +6,7 @@ data class CourseModel(
     val description: String = "",
     val authors: List<UserModel> = listOf(),
     val cover: String = "",
-    val rating: String = "",
+    val rating: String? = null,
     val countStudents: Long = 0L,
     val duration: Long? = null,
 )

@@ -6,16 +6,19 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
     
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -50,6 +53,9 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
             implementation(libs.datastore.preferences)
+            implementation(libs.sqlite.bundled)
+            implementation(libs.room.runtime)
+            implementation(libs.androidx.room.sqlite.wrapper)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -58,6 +64,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.appauth)
+            implementation(libs.androidx.core.ktx)
         }
         iosMain.dependencies {
             implementation(libs.coil.network.ktor)
@@ -93,12 +100,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    dependencies {
+        listOf("kspAndroid", "kspIosArm64", "kspIosX64", "kspIosSimulatorArm64").forEach {
+            add(it, libs.room.compiler)
+        }
+    }
 }
 

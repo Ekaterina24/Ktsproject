@@ -2,8 +2,16 @@ package com.rykova_e.kts_project.presentation.ui.screen.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rykova_e.kts_project.NetworkMonitor
+import com.rykova_e.kts_project.data.source.local.db.model.CourseAuthorCrossRef
+import com.rykova_e.kts_project.data.source.local.db.model.CourseReviewCrossRef
+import com.rykova_e.kts_project.data.source.local.db.repository.CourseRepositoryLocalImpl
+import com.rykova_e.kts_project.data.source.local.db.repository.ReviewRepositoryLocalImpl
+import com.rykova_e.kts_project.data.source.local.db.repository.UserRepositoryLocalImpl
 import com.rykova_e.kts_project.data.source.remote.CourseRepositoryImpl
 import com.rykova_e.kts_project.data.source.remote.UserRepositoryImpl
+import com.rykova_e.kts_project.domain.model.CourseDto
+import com.rykova_e.kts_project.presentation.ui.mapper.toDto
 import com.rykova_e.kts_project.presentation.ui.mapper.toUI
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import com.rykova_e.kts_project.presentation.ui.model.WrapperCoursesModel
@@ -15,6 +23,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
@@ -25,7 +34,13 @@ import kotlin.coroutines.cancellation.CancellationException
 class MainViewModel: ViewModel() {
 
     private val courseRepository = CourseRepositoryImpl()
+    private val courseRepositoryLocal = CourseRepositoryLocalImpl()
     private val userRepository = UserRepositoryImpl()
+    private val userRepositoryLocal = UserRepositoryLocalImpl()
+    private val reviewRepositoryLocal = ReviewRepositoryLocalImpl()
+
+    private val networkMonitor = NetworkMonitor()
+    val isOnlineFlow = networkMonitor.isConnected
 
     private val _state = MutableStateFlow(MainUiState())
     val state = _state.asStateFlow()
@@ -36,23 +51,63 @@ class MainViewModel: ViewModel() {
     init {
         viewModelScope.launch {
             _searchFlow
+                .combine(isOnlineFlow) { search, online -> search to online }
                 .debounce(300L)
                 .distinctUntilChanged()
-                .collect { search ->
-                    loadAndSearchCourses(search)
+                .collect { (search, online) ->
+                    loadAndSearchCourses(search, online = online)
                 }
         }
     }
 
-    fun loadAndSearchCourses(search: String, page: Int = 1) {
+    fun getCoursesLocal(search: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true, error = null) }
+            courseRepositoryLocal.searchCoursesData(search)
+                .onSuccess { courses ->
+                    courses.collect { list ->
+                        _state.update {
+                            it.copy(
+                                courses = list.map { it.toUI() },
+                                isLoading = false,
+                                hasNextPage = false,
+                                currentPage = 1,
+                            )
+                        }
+                    }
+                }
+                .onFailure { error ->
+                    if (error is CancellationException) throw error
+                    _state.update { it.copy(error = "Ошибка при получении курсов из базы") }
+                    Napier.e("GetCourses error", error, tag = "DB")
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            courses = emptyList(),
+                            error = error.message ?: "Unknown error"
+                        )
+                    }
+                }
+        }
+    }
+
+    fun loadAndSearchCourses(search: String, page: Int = 1, online: Boolean) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
+
+            if (!online) {
+                getCoursesLocal(search)
+                return@launch
+            }
+
             runCatching {
                 val query = search.trim()
                 if (query.isEmpty()) {
                     _state.update { it.copy(search = "", courses = emptyList()) }
                     val coursesWrapper = courseRepository.getCourses(page = 1).toUI()
+                    saveCoursesLocal(coursesWrapper.courses.map { it.toDto() })
+
                     val coursesWithAuthor = getCoursesWithAuthors(coursesWrapper.courses)
                     coursesWrapper.copy(courses = coursesWithAuthor)
                 } else {
@@ -69,6 +124,7 @@ class MainViewModel: ViewModel() {
                             isLoading = false,
                             hasNextPage = (coursesWrapper as? WrapperSearchCoursesModel)?.metaData?.has_next ?: false,
                             currentPage = 1,
+                            isRefreshing = false
                         )
                     }
                 } else {
@@ -78,18 +134,20 @@ class MainViewModel: ViewModel() {
                             isLoading = false,
                             hasNextPage = (coursesWrapper as? WrapperCoursesModel)?.metaData?.has_next ?: false,
                             currentPage = 1,
+                            isRefreshing = false
                         )
                     }
                 }
             }.onFailure { error ->
                 if (error is CancellationException) throw error
-                _state.update { it.copy(error = "Ошибка при получении курсов") }
+                _state.update { it.copy(error = "Ошибка при получении курсов", isRefreshing = false) }
                 Napier.e("LoadCourses error", error, tag = "Network")
                 _state.update {
                     it.copy(
                         isLoading = false,
                         courses = emptyList(),
-                        error = error.message ?: "Unknown error"
+                        error = error.message ?: "Unknown error",
+                        isRefreshing = false
                     )
                 }
             }
@@ -112,6 +170,7 @@ class MainViewModel: ViewModel() {
                     coursesWrapper.copy(courses = coursesWithAuthor)
                 } else {
                     val coursesWrapper = courseRepository.getCourses(page = nextPage).toUI()
+                    saveCoursesLocal(coursesWrapper.courses.map { it.toDto() })
                     val coursesWithAuthor = getCoursesWithAuthors(coursesWrapper.courses)
                     coursesWrapper.copy(courses = coursesWithAuthor)
                 }
@@ -152,11 +211,24 @@ class MainViewModel: ViewModel() {
 
     private suspend fun getCoursesWithAuthors(courses: List<CourseModel>): List<CourseModel> {
         val authorsId = courses.flatMap { it.authors.map { it.id } }
-        val authors = userRepository.getUsersByIds(authorsId).map { it.toUI() }
-        val authorsMap = authors.associateBy { it.id }
+        val authors = userRepository.getUsersByIds(authorsId)
+        userRepositoryLocal.saveUsers(authors)
 
-        val ratingIds = courses.map { it.rating.toLong() }
+        // связи авторов
+        val authorCrossRefs = courses.flatMap { course ->
+            course.authors.map { author ->
+                CourseAuthorCrossRef(course.id, author.id)
+            }
+        }
+        courseRepositoryLocal.insertCourseAuthors(authorCrossRefs)
+
+        val authorsUI = authors.map { it.toUI() }
+        val authorsMap = authorsUI.associateBy { it.id }
+
+        val ratingIds = courses.map { it.rating?.toLong() ?: 0 }
         val reviews = courseRepository.getReviewsByCourseIds(ratingIds)
+        reviewRepositoryLocal.saveReviews(reviews)
+
         val reviewsMap = reviews.associateBy { it.courseId }
 
         val coursesWithAuthors = courses.map { course ->
@@ -165,6 +237,12 @@ class MainViewModel: ViewModel() {
             }
             course.copy(authors = courseAuthors)
         }
+
+        // связи отзывов
+        val reviewCrossRefs = reviews.map { review ->
+            CourseReviewCrossRef(review.courseId.toLong(), review.id)
+        }
+        courseRepositoryLocal.insertCourseReviews(reviewCrossRefs)
 
         val coursesWithReviews = coursesWithAuthors.map { course ->
             val courseReview = reviewsMap[course.id.toString()]
@@ -180,6 +258,19 @@ class MainViewModel: ViewModel() {
     }
 
     fun reload() {
-        loadAndSearchCourses(_state.value.search)
+        if (isOnlineFlow.value) {
+            _state.update { it.copy(isRefreshing = true) }
+            loadAndSearchCourses(
+                search = _state.value.search,
+                page = _state.value.currentPage,
+                online = isOnlineFlow.value
+            )
+        } else {
+            _state.update { it.copy(isRefreshing = false) }
+        }
+    }
+
+    suspend fun saveCoursesLocal(courses: List<CourseDto>) {
+        courseRepositoryLocal.saveCourses(courses)
     }
 }

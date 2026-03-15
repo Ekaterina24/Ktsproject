@@ -28,6 +28,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -53,9 +55,10 @@ fun CourseListScreen(
     state: MainUiState,
     onChangedSearch: (String) -> Unit,
     loadMore: () -> Unit,
-    reload: () -> Unit
+    reload: () -> Unit,
 ) {
     val listState = rememberLazyListState()
+    val refreshState = rememberPullToRefreshState()
 
     LaunchedEffect(state.courses.size) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }
@@ -69,7 +72,6 @@ fun CourseListScreen(
                 }
             }
     }
-
     Scaffold(
         modifier = Modifier.background(MaterialTheme.colorScheme.onSecondary)
     ) { paddingValues ->
@@ -188,24 +190,30 @@ fun CourseListScreen(
                             }
                         }
                     }
-                    LazyColumn(
-                        state = listState
+                    PullToRefreshBox(
+                        isRefreshing = state.isRefreshing,
+                        state = refreshState,
+                        onRefresh = { reload() }
                     ) {
-                        items(state.courses, key = { it.id }) { item ->
-                            CourseCardUI(
-                                model = item
-                            )
-                        }
+                        LazyColumn(
+                            state = listState
+                        ) {
+                            items(state.courses, key = { it.id }) { item ->
+                                CourseCardUI(
+                                    model = item
+                                )
+                            }
 
-                        if (state.isLoadingMore) {
-                            item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressBarCustom()
+                            if (state.isLoadingMore) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressBarCustom()
+                                    }
                                 }
                             }
                         }

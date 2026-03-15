@@ -122,10 +122,12 @@ fun CourseCardUI(
 
             Column {
                 Row {
-                    ParameterCountUI(
-                        value = model.rating,
-                        imageVector = Icons.Outlined.Star
-                    )
+                    model.rating?.let { rating ->
+                        ParameterCountUI(
+                            value = rating,
+                            imageVector = Icons.Outlined.Star
+                        )
+                    }
                     ParameterCountUI(
                         value = model.countStudents.toString(),
                         imageVector = Icons.Default.Person
