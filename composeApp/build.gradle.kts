@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -43,6 +42,11 @@ kotlin {
 
             implementation(libs.compose.navigation)
             implementation(libs.coil.compose)
+            implementation(libs.material.icons.core)
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+        }
+        iosMain.dependencies {
+            implementation(libs.coil.network.ktor)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
