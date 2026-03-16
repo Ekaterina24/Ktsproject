@@ -6,6 +6,7 @@ import com.rykova_e.kts_project.domain.model.MetaDataDto
 import com.rykova_e.kts_project.domain.model.SearchDto
 import com.rykova_e.kts_project.domain.model.WrapperCoursesDto
 import com.rykova_e.kts_project.domain.model.WrapperSearchCoursesDto
+import com.rykova_e.kts_project.presentation.ui.model.CommonCourses
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import com.rykova_e.kts_project.presentation.ui.model.MetaDataModel
 import com.rykova_e.kts_project.presentation.ui.model.SearchModel
@@ -79,5 +80,12 @@ fun CourseWithDataDto.toUI(): CourseModel {
         rating = this.review?.averageReview,
         countStudents = this.course.countStudents,
         duration = this.course.duration
+    )
+}
+
+fun List<CourseWithDataDto>.toCommonCourseUI(): CommonCourses {
+    return CommonCourses(
+        metaData = MetaDataModel(),
+        courses = this.map { it.toUI() }
     )
 }

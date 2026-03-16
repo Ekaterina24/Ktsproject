@@ -9,8 +9,6 @@ import com.rykova_e.kts_project.domain.model.CourseDto
 import com.rykova_e.kts_project.domain.model.CourseWithDataDto
 import com.rykova_e.kts_project.domain.repository.local.CourseRepositoryLocal
 import com.rykova_e.kts_project.utils.suspendRunCatching
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class CourseRepositoryLocalImpl: CourseRepositoryLocal {
 
@@ -19,9 +17,8 @@ class CourseRepositoryLocalImpl: CourseRepositoryLocal {
         courseDao.saveCourses(courses.map { it.toEntity() })
     }
 
-    override fun searchCoursesData(search: String): Result<Flow<List<CourseWithDataDto>>> = suspendRunCatching {
-        courseDao.searchCoursesData(search).map { it.map { it.toDto() } }
-    }
+    override suspend fun searchCoursesData(search: String): List<CourseWithDataDto> =
+        courseDao.searchCoursesData(search).map { it.toDto() }
 
     override suspend fun insertCourseAuthors(crossRefs: List<CourseAuthorCrossRef>) {
         courseDao.insertCourseAuthors(crossRefs)
@@ -29,5 +26,9 @@ class CourseRepositoryLocalImpl: CourseRepositoryLocal {
 
     override suspend fun insertCourseReviews(crossRefs: List<CourseReviewCrossRef>) {
         courseDao.insertCourseReviews(crossRefs)
+    }
+
+    override suspend fun clearAllData() {
+        courseDao.clearAllData()
     }
 }

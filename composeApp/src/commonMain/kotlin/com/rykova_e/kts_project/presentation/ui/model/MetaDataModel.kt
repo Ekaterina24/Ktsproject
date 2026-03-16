@@ -1,7 +1,7 @@
 package com.rykova_e.kts_project.presentation.ui.model
 
 data class MetaDataModel(
-    val page: Int,
-    val has_next: Boolean,
-    val has_previous: Boolean
+    val page: Int = 0,
+    val has_next: Boolean = false,
+    val has_previous: Boolean = false
 )

@@ -28,6 +28,7 @@ room = "2.8.4"
 sqlite = "2.6.2"
 
 [libraries]
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

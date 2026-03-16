@@ -111,7 +111,7 @@ object AppAuth {
 
     object AuthConfig {
         const val AUTH_URI = "https://stepik.org/oauth2/authorize"
-        const val CALLBACK_URL = "https://88o4lz-46-188-126-136.ru.tuna.am/callback"
+        const val CALLBACK_URL = "https://doxos7-46-188-126-136.ru.tuna.am/callback"
         const val TOKEN_URI = "https://stepik.org/oauth2/token/"
 
         const val END_SESSION_URI = "https://oauth.yandex.ru/logout"

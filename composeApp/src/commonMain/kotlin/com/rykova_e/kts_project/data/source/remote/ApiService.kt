@@ -1,6 +1,7 @@
 package com.rykova_e.kts_project.data.source.remote
 
 import com.rykova_e.kts_project.data.source.remote.model.CourseWrapper
+import com.rykova_e.kts_project.data.source.remote.model.CurrentUserWrapper
 import com.rykova_e.kts_project.data.source.remote.model.ReviewWrapper
 import com.rykova_e.kts_project.data.source.remote.model.SearchWrapper
 import com.rykova_e.kts_project.data.source.remote.model.WrapperCourses
@@ -37,5 +38,9 @@ class ApiService(private val httpClient: HttpClient) {
 
     suspend fun getReviewCourseById(id: Long): ReviewWrapper {
         return httpClient.get("course-review-summaries/$id").body()
+    }
+
+    suspend fun getUserProfile(): CurrentUserWrapper {
+        return httpClient.get("stepics/1").body()
     }
 }

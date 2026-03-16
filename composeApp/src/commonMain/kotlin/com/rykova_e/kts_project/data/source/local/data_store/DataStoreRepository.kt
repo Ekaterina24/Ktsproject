@@ -39,10 +39,6 @@ class DataStoreSettingsStorage(
         dataStore.edit { prefs -> prefs[FIRST_OPEN] = false }
     }
 
-    override suspend fun clearAll(): Result<Unit> = suspendRunCatching {
-        dataStore.edit { it.clear() }
-    }
-
     override fun observeAccessToken(): Flow<String> =
         dataStore.data.map { prefs -> prefs[ACCESS_TOKEN].orEmpty() }
 
