@@ -9,6 +9,8 @@ import android.os.Build
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.rykova_e.kts_project.data.source.local.db.AppDatabase
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -61,3 +63,5 @@ actual class NetworkMonitor {
         connectivityManager.registerNetworkCallback(request, callback)
     }
 }
+
+actual fun provideEngine(): HttpClientEngine = OkHttp.create()

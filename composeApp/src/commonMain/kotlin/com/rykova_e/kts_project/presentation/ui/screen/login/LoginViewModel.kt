@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.rykova_e.kts_project.domain.repository.PlatformIntent
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginStateEvent
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginUiEvent
-import com.rykova_e.kts_project.presentation.ui.screen.login.LoginUiState
 import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow

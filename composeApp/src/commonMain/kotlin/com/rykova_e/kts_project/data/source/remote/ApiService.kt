@@ -7,6 +7,7 @@ import com.rykova_e.kts_project.data.source.remote.model.ReviewWrapper
 import com.rykova_e.kts_project.data.source.remote.model.SearchWrapper
 import com.rykova_e.kts_project.data.source.remote.model.WrapperCourses
 import com.rykova_e.kts_project.data.source.remote.model.WrapperUser
+import com.rykova_e.kts_project.provideEngine
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -43,7 +44,7 @@ class ApiService(private val dataStore: SettingsStorage) {
         }
     }
 
-    private val httpClient = HttpClient {
+    private val httpClient = HttpClient(provideEngine()) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
