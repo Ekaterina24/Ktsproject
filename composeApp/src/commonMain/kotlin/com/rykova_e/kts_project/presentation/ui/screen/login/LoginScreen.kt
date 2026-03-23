@@ -34,14 +34,14 @@ import com.rykova_e.kts_project.presentation.ui.component.CircularProgressBarCus
 import com.rykova_e.kts_project.presentation.ui.screen.login.event.LoginStateEvent
 import com.rykova_e.kts_project.presentation.ui.screen.login.platform.AuthLauncher
 import com.rykova_e.kts_project.presentation.ui.screen.login.platform.LoginEventsHandler
-import com.rykova_e.kts_project.presentation.ui.screen.login.platform.rememberLoginViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreen(
     snackbarHostState: SnackbarHostState,
     navController: NavController
 ) {
-    val viewModel: LoginViewModel = rememberLoginViewModel()
+    val viewModel: LoginViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LoginEventsHandler(viewModel, snackbarHostState, navController)

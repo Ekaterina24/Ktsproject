@@ -18,8 +18,10 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-class MainViewModel: ViewModel() {
-    private val courseRepositoryCommonImpl = CourseRepositoryCommonImpl()
+class MainViewModel(
+    private val courseRepositoryCommon: CourseRepositoryCommonImpl
+): ViewModel() {
+
     private val networkMonitor = NetworkMonitor()
     val isOnlineFlow = networkMonitor.isConnected
 
@@ -51,7 +53,7 @@ class MainViewModel: ViewModel() {
                 if (query.isEmpty()) {
                     _state.update { it.copy(search = "", courses = emptyList()) }
                 }
-                courseRepositoryCommonImpl.getCoursesLocalOrNetwork(
+                courseRepositoryCommon.getCoursesLocalOrNetwork(
                     search = search,
                     page = page,
                     online = online
@@ -88,7 +90,7 @@ class MainViewModel: ViewModel() {
             _state.update { it.copy(isLoadingMore = true) }
             val nextPage = _state.value.currentPage + 1
             runCatching {
-                courseRepositoryCommonImpl.loadMoreCourses(
+                courseRepositoryCommon.loadMoreCourses(
                     search = _searchFlow.value,
                     nextPage = nextPage
                 )

@@ -8,9 +8,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
-class UserRepositoryImpl: UserRepository {
+class UserRepositoryImpl(
+    private val apiService: ApiService
+): UserRepository {
 
-    private val apiService = ApiService(Networking.httpClient)
     override suspend fun getUsersByIds(ids: List<Long>): List<UserDto> {
         return coroutineScope {
             val authors = ids.map { id ->

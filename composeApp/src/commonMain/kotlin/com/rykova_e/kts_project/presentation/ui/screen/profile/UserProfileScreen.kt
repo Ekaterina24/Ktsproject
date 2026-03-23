@@ -27,20 +27,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.rykova_e.kts_project.presentation.ui.component.CustomLoader
 import com.rykova_e.kts_project.presentation.ui.component.CustomReload
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun UserProfileScreen(
     modifier: Modifier = Modifier,
     navigateToLogin: () -> Unit
 ) {
-    val viewModel = viewModel { UserProfileViewModel() }
+    val viewModel: UserProfileViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {

@@ -37,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.rykova_e.kts_project.presentation.theme.BlueColor
 import com.rykova_e.kts_project.presentation.ui.component.CircularProgressBarCustom
@@ -45,12 +44,13 @@ import com.rykova_e.kts_project.presentation.ui.component.CourseCardUI
 import com.rykova_e.kts_project.presentation.ui.component.CustomReload
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CourseListScreen(
     modifier: Modifier = Modifier,
 ) {
-    val viewModel = viewModel { MainViewModel() }
+    val viewModel: MainViewModel = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val listState = rememberLazyListState()

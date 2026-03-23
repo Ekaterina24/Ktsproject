@@ -4,8 +4,7 @@ import com.rykova_e.kts_project.data.auth.model.TokensModel
 
 interface PlatformAuthService {
     fun getAuthorizationRequestIntent(
-        authRequest: AuthRequest,
-        customTabsIntent: Any?
+        authRequest: AuthRequest
     ): PlatformIntent
 }
 

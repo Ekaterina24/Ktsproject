@@ -14,16 +14,14 @@ import okio.Path.Companion.toPath
 
 internal const val DATA_STORE_FILE_NAME = "settings.preferences_pb"
 
-object DataStoreProvider {
-    val instance: DataStore<Preferences> by lazy {
-        PreferenceDataStoreFactory.createWithPath(
-            produceFile = { "${getFilesDir()}/$DATA_STORE_FILE_NAME".toPath() }
-        )
-    }
+fun createDataStore(): DataStore<Preferences> {
+    return PreferenceDataStoreFactory.createWithPath(
+        produceFile = { "${getFilesDir()}/$DATA_STORE_FILE_NAME".toPath() }
+    )
 }
 
 class DataStoreSettingsStorage(
-    private val dataStore: DataStore<Preferences> = DataStoreProvider.instance
+    private val dataStore: DataStore<Preferences>
 ) : SettingsStorage {
 
     private companion object {

@@ -7,6 +7,3 @@ import com.rykova_e.kts_project.presentation.ui.screen.login.LoginViewModel
 expect fun AuthLauncher(
     viewModel: LoginViewModel
 )
-
-@Composable
-expect fun rememberLoginViewModel(): LoginViewModel

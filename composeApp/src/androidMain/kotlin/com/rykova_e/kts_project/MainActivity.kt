@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
+import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.presentation.theme.AppThemeMaterial
 import com.rykova_e.kts_project.presentation.ui.component.CustomLoader
 import com.rykova_e.kts_project.presentation.ui.navigation.Screen
@@ -29,8 +29,11 @@ import com.rykova_e.kts_project.presentation.ui.screen.profile.UserProfileScreen
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
+    private val dataStore: SettingsStorage by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -43,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
                 var isLoading by remember { mutableStateOf(true) }
                 var startDestination by remember { mutableStateOf("") }
-                val dataStore = remember { DataStoreSettingsStorage() }
+
                 val firstOpen by dataStore.observeFirstOpen()
                     .collectAsStateWithLifecycle(initialValue = true)
 

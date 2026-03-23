@@ -10,9 +10,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
-class CourseRepositoryImpl: CourseRepository {
-
-    private val apiService = ApiService(Networking.httpClient)
+class CourseRepositoryImpl(
+    private val apiService: ApiService
+): CourseRepository {
 
     override suspend fun getCourses(page: Int): WrapperCoursesDto {
         return apiService.getCourses(page).toDto()
