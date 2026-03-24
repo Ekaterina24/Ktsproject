@@ -18,7 +18,7 @@ class CourseRepositoryImpl(
         return apiService.getCourses(page).toDto()
     }
 
-    override suspend fun getCourse(id: Long): CourseDto {
+    override suspend fun getCourseById(id: Long): CourseDto {
         return apiService.getCourseById(id).courses.first().toDto()
     }
 
@@ -26,7 +26,7 @@ class CourseRepositoryImpl(
         return coroutineScope {
             val courses = ids.map { id ->
                 async {
-                    getCourse(id)
+                    getCourseById(id)
                 }
             }
             courses.awaitAll()
@@ -50,5 +50,9 @@ class CourseRepositoryImpl(
             }
             reviews.awaitAll()
         }
+    }
+
+    override suspend fun singUpOnCourse(courseId: Long) {
+        apiService.singUpOnCourse(courseId)
     }
 }

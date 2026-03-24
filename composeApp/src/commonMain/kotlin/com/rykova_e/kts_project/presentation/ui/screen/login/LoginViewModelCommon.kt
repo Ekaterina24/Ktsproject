@@ -1,5 +1,6 @@
 package com.rykova_e.kts_project.presentation.ui.screen.login
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.domain.repository.PlatformAuthService
@@ -24,26 +25,26 @@ class LoginViewModelCommon(
     private val openAuthPageChannel: PlatformChannel<PlatformIntent>,
     private val authSuccessChannel: PlatformChannel<Unit>,
     private val dataStore: SettingsStorage
-) : LoginViewModel() {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginUiState())
-    override val state = _state.asStateFlow()
+    val state = _state.asStateFlow()
 
     private val _loadingFlow = MutableStateFlow(false)
-    override val loadingFlow: StateFlow<Boolean> = _loadingFlow.asStateFlow()
+    val loadingFlow: StateFlow<Boolean> = _loadingFlow.asStateFlow()
 
-    override val authSuccessFlow: Flow<Unit> = authSuccessChannel.receiveAsFlow()
-    override val toastFlow: Flow<String> = toastChannel.receiveAsFlow()
-    override val openAuthPageFlow: Flow<PlatformIntent> = openAuthPageChannel.receiveAsFlow()
+    val authSuccessFlow: Flow<Unit> = authSuccessChannel.receiveAsFlow()
+    val toastFlow: Flow<String> = toastChannel.receiveAsFlow()
+    val openAuthPageFlow: Flow<PlatformIntent> = openAuthPageChannel.receiveAsFlow()
 
     private val _events = MutableSharedFlow<LoginUiEvent?>()
-    override val events = _events.asSharedFlow()
+    val events = _events.asSharedFlow()
 
-    override fun login() {
+    fun login() {
         openLoginPage()
     }
 
-    override fun exchangeCodeForTokens() {
+    fun exchangeCodeForTokens() {
         viewModelScope.launch {
             _loadingFlow.value = true
             runCatching {
@@ -73,11 +74,11 @@ class LoginViewModelCommon(
         onLoginStateEvent(LoginStateEvent.OnChangedShowInputCode(true))
     }
 
-    override fun onAuthCodeFailed() {
+    fun onAuthCodeFailed() {
         toastChannel.send("Авторизация отменена")
     }
 
-    override fun onLoginStateEvent(event: LoginStateEvent) {
+    fun onLoginStateEvent(event: LoginStateEvent) {
         when (event) {
             LoginStateEvent.OnOpenLoginPage -> login()
             is LoginStateEvent.OnChangedCode -> _state.update { it.copy(code = event.value) }

@@ -3,6 +3,7 @@ package com.rykova_e.kts_project.presentation.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.rykova_e.kts_project.data.source.CourseRepositoryCommonImpl
+import com.rykova_e.kts_project.data.source.GetCourseRepositoryCommonImpl
 import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
 import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.data.source.local.data_store.createDataStore
@@ -43,6 +44,16 @@ val commonDataModule = module {
 
     single {
         CourseRepositoryCommonImpl(
+            courseRepository = get(),
+            courseRepositoryLocal = get(),
+            userRepository = get(),
+            userRepositoryLocal = get(),
+            reviewRepositoryLocal = get()
+        )
+    }
+
+    single {
+        GetCourseRepositoryCommonImpl(
             courseRepository = get(),
             courseRepositoryLocal = get(),
             userRepository = get(),

@@ -12,7 +12,7 @@ data class ReviewRemote(
     @SerialName("average")
     val averageReview: String,
     @SerialName("count")
-    val count: Long,
+    val count: Int,
     @SerialName("distribution")
     val distribution: List<Int>
 )

@@ -8,8 +8,10 @@ import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsSt
 import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.domain.repository.AuthRepository
 import com.rykova_e.kts_project.domain.repository.PlatformAuthService
+import com.rykova_e.kts_project.domain.repository.PlatformIntent
 import com.rykova_e.kts_project.presentation.ui.screen.login.PlatformChannel
 import kotlinx.coroutines.channels.Channel
+import net.openid.appauth.AuthorizationService
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -17,6 +19,7 @@ actual fun dataModule() = module {
 
     factory<AuthRepository> { AuthRepositoryImpl() }
     factory<PlatformAuthService> { AndroidPlatformAuthService(get()) }
+    factory<AuthorizationService> { AuthorizationService(get()) }
 
     // Toast
     factory(named("toast_channel")) {
@@ -32,7 +35,7 @@ actual fun dataModule() = module {
         Channel<Intent>(Channel.BUFFERED)
     }
 
-    factory<PlatformChannel<Intent>>(named("auth_page_channel")) {
+    factory<PlatformChannel<PlatformIntent>>(named("auth_page_channel")) {
         AndroidChannel(get(named("auth_page_channel")))
     }
 

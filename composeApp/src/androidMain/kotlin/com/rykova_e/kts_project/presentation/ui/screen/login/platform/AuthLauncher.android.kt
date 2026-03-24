@@ -6,10 +6,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import com.rykova_e.kts_project.presentation.ui.screen.login.LoginViewModel
+import com.rykova_e.kts_project.presentation.ui.screen.login.LoginViewModelCommon
 
 @Composable
-actual fun AuthLauncher(viewModel: LoginViewModel) {
+actual fun AuthLauncher(viewModel: LoginViewModelCommon) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()

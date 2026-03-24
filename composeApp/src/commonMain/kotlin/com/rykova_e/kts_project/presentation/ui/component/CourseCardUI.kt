@@ -1,6 +1,7 @@
 package com.rykova_e.kts_project.presentation.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +47,8 @@ import com.rykova_e.kts_project.presentation.ui.model.UserModel
 @Composable
 fun CourseCardUI(
     modifierImage: Modifier = Modifier,
-    model: CourseModel
+    model: CourseModel,
+    onClick: (Long) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -54,6 +56,7 @@ fun CourseCardUI(
             .height(height = 200.dp)
             .padding(10.dp)
             .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp))
+            .clickable { onClick(model.id) }
         ,
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors().copy(
@@ -125,17 +128,20 @@ fun CourseCardUI(
                     model.rating?.let { rating ->
                         ParameterCountUI(
                             value = rating,
-                            imageVector = Icons.Outlined.Star
+                            imageVector = Icons.Outlined.Star,
+                            colorText = Color.Gray
                         )
                     }
                     ParameterCountUI(
                         value = model.countStudents.toString(),
-                        imageVector = Icons.Default.Person
+                        imageVector = Icons.Default.Person,
+                        colorText = Color.Gray
                     )
                     model.duration?.let { duration ->
                         ParameterCountUI(
                             value = duration.toString(),
-                            imageVector = Icons.Default.AccountCircle
+                            imageVector = Icons.Default.AccountCircle,
+                            colorText = Color.Gray
                         )
                     }
                     Icon(
@@ -172,7 +178,8 @@ private fun CourseCardUIPreview() {
                         UserModel(name = "Author 1"), UserModel(name = "Author 2")
                     ),
                     rating = "5"
-                )
+                ),
+                onClick = {}
             )
         }
     }

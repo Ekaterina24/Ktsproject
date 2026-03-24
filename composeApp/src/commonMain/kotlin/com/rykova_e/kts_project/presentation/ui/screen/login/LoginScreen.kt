@@ -41,7 +41,7 @@ fun LoginScreen(
     snackbarHostState: SnackbarHostState,
     navController: NavController
 ) {
-    val viewModel: LoginViewModel = koinViewModel()
+    val viewModel: LoginViewModelCommon = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LoginEventsHandler(viewModel, snackbarHostState, navController)

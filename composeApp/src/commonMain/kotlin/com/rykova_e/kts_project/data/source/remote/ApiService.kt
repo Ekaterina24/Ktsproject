@@ -3,8 +3,10 @@ package com.rykova_e.kts_project.data.source.remote
 import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.data.source.remote.model.CourseWrapper
 import com.rykova_e.kts_project.data.source.remote.model.CurrentUserWrapper
+import com.rykova_e.kts_project.data.source.remote.model.EnrollmentRemote
 import com.rykova_e.kts_project.data.source.remote.model.ReviewWrapper
 import com.rykova_e.kts_project.data.source.remote.model.SearchWrapper
+import com.rykova_e.kts_project.data.source.remote.model.SingUpOnCourseRequest
 import com.rykova_e.kts_project.data.source.remote.model.WrapperCourses
 import com.rykova_e.kts_project.data.source.remote.model.WrapperUser
 import com.rykova_e.kts_project.provideEngine
@@ -19,6 +21,8 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
@@ -97,5 +101,15 @@ class ApiService(private val dataStore: SettingsStorage) {
 
     suspend fun getUserProfile(): CurrentUserWrapper {
         return httpClient.get("stepics/1").body()
+    }
+
+    suspend fun singUpOnCourse(courseId: Long) {
+        return httpClient.post("enrollments") {
+            setBody(
+                SingUpOnCourseRequest(
+                    enrollment = EnrollmentRemote(course = courseId)
+                )
+            )
+        }.body()
     }
 }
