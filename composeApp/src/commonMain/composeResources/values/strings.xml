@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_title">Stepik Client</string>
+    <string name="welcome_text">Добро пожаловать!</string>
+    <string name="next_step">Далее</string>
+    <string name="login_text">Авторизуйтесь в аккаунте</string>
+    <string name="label_name">Имя</string>
+    <string name="label_password">Пароль</string>
+    <string name="enter_text">Войти</string>
+    <string name="courses_text">Курсы</string>
+    <string name="search_text">Поиск</string>
+    <string name="empty_list">Список данных пуст</string>
+    <string name="reload_text">Загрузить заново</string>
+</resources>
