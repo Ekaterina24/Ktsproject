@@ -29,7 +29,7 @@ object Networking {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    Napier.d(message, tag = "Ktor")
+                    Napier.d(message = message, tag = "Ktor")
                 }
             }
             level = LogLevel.BODY

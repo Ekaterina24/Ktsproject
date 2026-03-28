@@ -24,6 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.rykova_e.kts_project.presentation.theme.BlueColor
+import com.rykova_e.kts_project.presentation.theme.font_size_20
+import com.rykova_e.kts_project.presentation.theme.font_size_24
+import com.rykova_e.kts_project.presentation.theme.font_size_36
+import com.rykova_e.kts_project.presentation.theme.padding_12
+import com.rykova_e.kts_project.presentation.theme.padding_20
+import com.rykova_e.kts_project.presentation.theme.padding_8
+import ktsproject.composeapp.generated.resources.Res
+import ktsproject.composeapp.generated.resources.app_title
+import ktsproject.composeapp.generated.resources.next_step
+import ktsproject.composeapp.generated.resources.welcome_text
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GreetingScreen(
@@ -34,7 +45,7 @@ fun GreetingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(20.dp),
+                .padding(padding_20),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
@@ -43,28 +54,28 @@ fun GreetingScreen(
             ) {
                 AsyncImage(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(padding_8))
                         .sizeIn(maxWidth = 400.dp),
                     model = "https://ts2.mm.bing.net/th?id=OIP.pNJkcaxm0GdnDO9qD1jZ2gHaHa&pid=15.1",
                     contentDescription = null,
                 )
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(padding_12))
                 Text(
-                    text = "Stepik Client",
-                    fontSize = 36.sp,
+                    text = stringResource(Res.string.app_title),
+                    fontSize = font_size_36,
                     fontWeight = FontWeight.Bold,
                 )
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(padding_20))
                 Text(
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                    text = "Добро пожаловать!",
-                    fontSize = 24.sp,
+                    modifier = Modifier.padding(horizontal = padding_20),
+                    text = stringResource(Res.string.welcome_text),
+                    fontSize = font_size_24,
                     textAlign = TextAlign.Center,
                     lineHeight = 30.sp
                 )
             }
             Button(
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+                contentPadding = PaddingValues(horizontal = padding_20, vertical = padding_12),
                 colors = ButtonColors(
                     containerColor = BlueColor,
                     contentColor = Color.White,
@@ -74,8 +85,8 @@ fun GreetingScreen(
                 onClick = { navigateToLoginScreen() }
             ) {
                 Text(
-                    text = "Далее",
-                    fontSize = 20.sp
+                    text = stringResource(Res.string.next_step),
+                    fontSize = font_size_20
                 )
             }
         }

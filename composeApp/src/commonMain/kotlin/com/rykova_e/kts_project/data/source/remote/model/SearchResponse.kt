@@ -4,15 +4,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchWrapper(
-    val meta: MetaData,
+data class SearchResponse(
+    @SerialName("meta")
+    val meta: MetaDataRemote,
     @SerialName("search-results")
-    val searchItems: List<SearchItem>,
+    val searchItems: List<SearchRemote>,
 )
 
 @Serializable
-data class SearchItem(
+data class SearchRemote(
+    @SerialName("id")
     val id: Long,
-    val course: Long
+    @SerialName("course")
+    val courseId: Long
 )
 

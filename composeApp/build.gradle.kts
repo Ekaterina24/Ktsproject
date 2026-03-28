@@ -49,6 +49,8 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
+
+            implementation(compose.components.resources)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -58,7 +60,6 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
         }
         iosMain.dependencies {
-            implementation(libs.coil.network.ktor)
             implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {

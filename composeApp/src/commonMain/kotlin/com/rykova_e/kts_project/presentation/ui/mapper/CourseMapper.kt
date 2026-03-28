@@ -1,16 +1,14 @@
 package com.rykova_e.kts_project.presentation.ui.mapper
 
 import com.rykova_e.kts_project.domain.model.CourseDto
-import com.rykova_e.kts_project.domain.model.MetaDataDto
+import com.rykova_e.kts_project.domain.model.CoursesDto
+import com.rykova_e.kts_project.domain.model.SearchCoursesDto
 import com.rykova_e.kts_project.domain.model.SearchDto
-import com.rykova_e.kts_project.domain.model.WrapperCoursesDto
-import com.rykova_e.kts_project.domain.model.WrapperSearchCoursesDto
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
-import com.rykova_e.kts_project.presentation.ui.model.MetaDataModel
+import com.rykova_e.kts_project.presentation.ui.model.SearchCoursesModel
 import com.rykova_e.kts_project.presentation.ui.model.SearchModel
 import com.rykova_e.kts_project.presentation.ui.model.UserModel
-import com.rykova_e.kts_project.presentation.ui.model.WrapperCoursesModel
-import com.rykova_e.kts_project.presentation.ui.model.WrapperSearchCoursesModel
+import com.rykova_e.kts_project.presentation.ui.model.CoursesModel
 
 fun CourseDto.toUI(): CourseModel {
     return CourseModel(
@@ -25,32 +23,26 @@ fun CourseDto.toUI(): CourseModel {
     )
 }
 
-fun WrapperCoursesDto.toUI(): WrapperCoursesModel {
-    return WrapperCoursesModel(
-        metaData = this.meta.toUI(),
+fun CoursesDto.toUI(): CoursesModel {
+    return CoursesModel(
+        page = this.page,
+        hasNext = this.hasNext,
         courses = this.courses.map { it.toUI() }
     )
 }
 
-fun WrapperSearchCoursesDto.toUI(): WrapperSearchCoursesModel {
-    return WrapperSearchCoursesModel(
-        metaData = this.meta.toUI(),
+fun SearchCoursesDto.toUI(): SearchCoursesModel {
+    return SearchCoursesModel(
+        page = this.page,
+        hasNext = this.hasNext,
         courseIds = this.searchItems.map { it.toUI() },
         courses = listOf()
-    )
-}
-
-fun MetaDataDto.toUI(): MetaDataModel {
-    return MetaDataModel(
-        page = this.page,
-        has_next = this.has_next,
-        has_previous = this.has_previous
     )
 }
 
 fun SearchDto.toUI(): SearchModel {
     return SearchModel(
         id = this.id,
-        course = this.course
+        courseId = this.courseId
     )
 }

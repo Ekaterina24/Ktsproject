@@ -40,22 +40,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.rykova_e.kts_project.presentation.theme.AppThemeMaterial
+import com.rykova_e.kts_project.presentation.theme.font_size_14
+import com.rykova_e.kts_project.presentation.theme.font_size_16
+import com.rykova_e.kts_project.presentation.theme.padding_12
+import com.rykova_e.kts_project.presentation.theme.padding_16
+import com.rykova_e.kts_project.presentation.theme.padding_20
+import com.rykova_e.kts_project.presentation.theme.padding_4
+import com.rykova_e.kts_project.presentation.theme.padding_8
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import com.rykova_e.kts_project.presentation.ui.model.UserModel
 
 @Composable
 fun CourseCardUI(
+    model: CourseModel,
     modifierImage: Modifier = Modifier,
-    model: CourseModel
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(height = 200.dp)
-            .padding(10.dp)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp))
+            .padding(padding_12)
+            .shadow(elevation = padding_4, shape = RoundedCornerShape(padding_8))
         ,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(padding_8),
         colors = CardDefaults.cardColors().copy(
             containerColor = MaterialTheme.colorScheme.background
         )
@@ -63,7 +70,7 @@ fun CourseCardUI(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(20.dp),
+                .padding(padding_20),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(modifier = Modifier.heightIn(max = 100.dp)) {
@@ -72,31 +79,31 @@ fun CourseCardUI(
                         .fillMaxHeight()
                         .weight(1f)
                     ,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(padding_4)
                 ) {
                     Text(
                         text = model.title,
                         color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 16.sp,
+                        fontSize = font_size_16,
                         maxLines = 3,
                         fontWeight = FontWeight.Medium,
                         lineHeight = 18.sp
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(padding_4))
                     Text(
                         text = model.authors.joinToString(", ") { it.name },
                         color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 14.sp,
+                        fontSize = font_size_14,
                         fontWeight = FontWeight.Light,
                         maxLines = 2,
                         lineHeight = 16.sp
                     )
                 }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(padding_8))
                 Box {
                     AsyncImage(
                         modifier = modifierImage
-                            .clip(RoundedCornerShape(4.dp))
+                            .clip(RoundedCornerShape(padding_4))
                             .size(60.dp)
                         ,
                         model = model.cover,
@@ -104,14 +111,14 @@ fun CourseCardUI(
                     )
                     Box(
                         Modifier
-                            .offset(4.dp, (-4).dp)
+                            .offset(padding_4, -padding_4)
                             .background(Color.LightGray, CircleShape)
-                            .padding(4.dp)
+                            .padding(padding_4)
                             .align(Alignment.TopEnd)
                     ) {
                         Icon(
                             modifier = Modifier
-                                .size(16.dp),
+                                .size(padding_16),
                             imageVector = Icons.Outlined.Favorite,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurface
@@ -138,9 +145,9 @@ fun CourseCardUI(
                     }
                     Icon(
                         modifier = Modifier
-                            .padding(start = 4.dp)
+                            .padding(start = padding_4)
                             .align(Alignment.CenterVertically)
-                            .size(12.dp),
+                            .size(padding_12),
                         imageVector = Icons.Default.Email,
                         contentDescription = null,
                         tint = Color.Gray,
@@ -158,7 +165,7 @@ private fun CourseCardUIPreview() {
         Surface {
             CourseCardUI(
                 modifierImage = Modifier
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(padding_4))
                     .background(Color.Gray)
                     .size(60.dp)
                 ,

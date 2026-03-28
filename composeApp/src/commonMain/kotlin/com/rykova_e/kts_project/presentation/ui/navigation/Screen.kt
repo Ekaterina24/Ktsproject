@@ -1,14 +1,17 @@
 package com.rykova_e.kts_project.presentation.ui.navigation
 
-sealed class Screen(val route: String) {
+import kotlinx.serialization.Serializable
 
-    object GreetingScreen: Screen(ROUTE_GREETING)
-    object LoginScreen: Screen(ROUTE_LOGIN)
-    object MainScreen: Screen(ROUTE_MAIN)
+@Serializable
+sealed class Screen {
+
+    @Serializable
+    object GreetingScreen: Screen()
+    @Serializable
+    object LoginScreen: Screen()
+    @Serializable
+    object MainScreen: Screen()
 
     companion object {
-        const val ROUTE_GREETING = "route_greeting"
-        const val ROUTE_LOGIN = "route_login"
-        const val ROUTE_MAIN = "route_main"
     }
 }
