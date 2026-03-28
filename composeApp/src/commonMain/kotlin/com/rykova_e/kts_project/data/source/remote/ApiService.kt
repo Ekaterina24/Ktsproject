@@ -4,9 +4,11 @@ import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.data.source.remote.model.CourseWrapper
 import com.rykova_e.kts_project.data.source.remote.model.CurrentUserWrapper
 import com.rykova_e.kts_project.data.source.remote.model.EnrollmentRemote
+import com.rykova_e.kts_project.data.source.remote.model.ProgressCourseResponse
 import com.rykova_e.kts_project.data.source.remote.model.ReviewWrapper
 import com.rykova_e.kts_project.data.source.remote.model.SearchWrapper
 import com.rykova_e.kts_project.data.source.remote.model.SingUpOnCourseRequest
+import com.rykova_e.kts_project.data.source.remote.model.UserCoursesResponse
 import com.rykova_e.kts_project.data.source.remote.model.WrapperCourses
 import com.rykova_e.kts_project.data.source.remote.model.WrapperUser
 import com.rykova_e.kts_project.provideEngine
@@ -111,5 +113,13 @@ class ApiService(private val dataStore: SettingsStorage) {
                 )
             )
         }.body()
+    }
+
+    suspend fun getUserCourses(): UserCoursesResponse {
+        return httpClient.get("user-courses").body()
+    }
+
+    suspend fun getProgressCourseById(idProgress: String): ProgressCourseResponse {
+        return httpClient.get("progresses/$idProgress").body()
     }
 }

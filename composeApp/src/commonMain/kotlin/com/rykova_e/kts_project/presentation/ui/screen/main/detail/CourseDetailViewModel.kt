@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class CourseDetailViewModel(
     private val courseId: Long,
     private val getCourseRepositoryCommonImpl: GetCourseRepositoryCommonImpl,
-    private val singUpOnCourseUseCase: SingUpOnCourseUseCase
+    private val singUpOnCourseUseCase: SingUpOnCourseUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(CourseDetailState())
@@ -32,10 +32,16 @@ class CourseDetailViewModel(
             }
                 .fold(
                     onSuccess = { course ->
-                        _state.update { it.copy(course = course, isLoading = false) }
+                        _state.update { it.copy(
+                            course = course,
+                            isLoading = false,
+                        ) }
                     },
                     onFailure = { failed ->
-                        _state.update { it.copy(course = CourseModel(), error = failed.message) }
+                        _state.update { it.copy(
+                            course = CourseModel(),
+                            error = failed.message
+                        ) }
                     }
                 )
         }
@@ -43,13 +49,18 @@ class CourseDetailViewModel(
 
     fun onEventCourseDetail(event: OnEventCourseDetail) {
         when (event) {
-            is OnEventCourseDetail.singUpOnCourse -> {
+            is OnEventCourseDetail.SingUpOnCourse -> {
                 viewModelScope.launch {
                     runCatching {
                         singUpOnCourseUseCase.execute(event.courseId)
                     }.fold(
                         onSuccess = {
-                            _state.update { it.copy(toast = "Вы записаны на курс") }
+                            _state.update {
+                                it.copy(
+                                    toast = "Вы записаны на курс",
+                                    course = it.course.copy(isRecord = true)
+                                )
+                            }
                         },
                         onFailure = {
                             _state.update { it.copy(error = "Ошибка записи на курс") }

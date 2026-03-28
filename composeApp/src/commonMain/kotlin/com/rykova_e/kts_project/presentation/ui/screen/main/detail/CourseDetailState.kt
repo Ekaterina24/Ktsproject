@@ -6,5 +6,6 @@ data class CourseDetailState(
     val course: CourseModel = CourseModel(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val toast: String? = null
+    val toast: String? = null,
+    val isRecord: Boolean = false
 )

@@ -23,7 +23,13 @@ fun CourseDto.toUI(): CourseModel {
         cover = this.cover,
         rating = this.rating,
         countStudents = this.countStudents,
-        duration = this.duration
+        duration = this.duration,
+        price = this.price,
+        isPaid = this.isPaid,
+        isRecord = this.isRecord,
+        percentProgress = this.progress,
+        score = this.score,
+        cost = this.cost,
     )
 }
 
@@ -36,7 +42,13 @@ fun CourseModel.toDto(): CourseDto {
         cover = this.cover,
         rating = this.rating,
         countStudents = this.countStudents,
-        duration = this.duration
+        duration = this.duration,
+        price = this.price,
+        isPaid = this.isPaid,
+        isRecord = this.isRecord,
+        progress = this.percentProgress,
+        score = this.score,
+        cost = this.cost,
     )
 }
 

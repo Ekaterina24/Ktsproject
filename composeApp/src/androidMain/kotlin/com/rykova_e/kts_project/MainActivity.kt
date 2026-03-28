@@ -24,6 +24,7 @@ import com.rykova_e.kts_project.presentation.ui.screen.login.LoginScreen
 import com.rykova_e.kts_project.presentation.ui.screen.main.CourseListScreen
 import com.rykova_e.kts_project.presentation.ui.screen.main.MainContainer
 import com.rykova_e.kts_project.presentation.ui.screen.main.detail.CourseDetailScreen
+import com.rykova_e.kts_project.presentation.ui.screen.my_courses.UserCoursesScreen
 import com.rykova_e.kts_project.presentation.ui.screen.onboarding.OnBoardingScreen
 import com.rykova_e.kts_project.presentation.ui.screen.profile.UserProfileScreen
 import io.github.aakira.napier.DebugAntilog
@@ -106,7 +107,8 @@ class MainActivity : ComponentActivity() {
                                             navController = navController
                                         )
                                     },
-                                    navController = navController
+                                    navController = navController,
+                                    snackbarHostState = snackbarHostState
                                 )
                             }
                             composable<Screen.ProfileScreen> {
@@ -119,7 +121,8 @@ class MainActivity : ComponentActivity() {
                                             }
                                         )
                                     },
-                                    navController = navController
+                                    navController = navController,
+                                    snackbarHostState = snackbarHostState
                                 )
                             }
 
@@ -133,7 +136,20 @@ class MainActivity : ComponentActivity() {
                                             snackbarHostState = snackbarHostState
                                         )
                                     },
-                                    navController = navController
+                                    navController = navController,
+                                    snackbarHostState = snackbarHostState
+                                )
+                            }
+
+                            composable<Screen.UserCoursesScreen> {
+                                MainContainer(
+                                    content = { modifier ->
+                                        UserCoursesScreen(
+                                            modifier = modifier,
+                                        )
+                                    },
+                                    navController = navController,
+                                    snackbarHostState = snackbarHostState
                                 )
                             }
                         }

@@ -21,4 +21,12 @@ data class CourseRemote(
     val countStudents: Long,
     @SerialName("time_to_complete")
     val duration: Long?,
+    @SerialName("price")
+    val price: String?,
+    @SerialName("is_paid")
+    val isPaid: Boolean,
+    @SerialName("enrollment")
+    val isRecord: Long?,
+    @SerialName("progress")
+    val progress: String?,
 )

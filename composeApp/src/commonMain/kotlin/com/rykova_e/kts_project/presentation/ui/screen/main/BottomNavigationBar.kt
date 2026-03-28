@@ -21,25 +21,39 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rykova_e.kts_project.presentation.ui.navigation.Screen
+import ktsproject.composeapp.generated.resources.Res
+import ktsproject.composeapp.generated.resources.list
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 
 @Stable
 data class Item(
     var isSelected: Boolean = false,
     val description: String,
     val screen: Screen = Screen.MainScreen,
-    val icon: ImageVector
+    val icon: BottomBarIcon
 )
+
+sealed interface BottomBarIcon {
+    data class Vector(val icon: ImageVector) : BottomBarIcon
+    data class Resource(val icon: DrawableResource) : BottomBarIcon
+}
 
 val bottomBarDestinations = listOf(
     Item(
         screen = Screen.MainScreen,
         description = "Главная",
-        icon = Icons.Default.Home
+        icon = BottomBarIcon.Vector(Icons.Default.Home)
+    ),
+    Item(
+        screen = Screen.UserCoursesScreen,
+        description = "Мои курсы",
+        icon = BottomBarIcon.Resource(Res.drawable.list)
     ),
     Item(
         screen = Screen.ProfileScreen,
         description = "Профиль",
-        icon = Icons.Default.Person
+        icon = BottomBarIcon.Vector(Icons.Default.Person)
     )
 )
 
@@ -59,16 +73,29 @@ fun BottomNavigationBar(navController: NavController) {
                     is Screen.ProfileScreen ->
                         navController.currentBackStackEntryAsState()
                             .value?.destination?.hasRoute(Screen.ProfileScreen::class) == true
+                    is Screen.UserCoursesScreen ->
+                        navController.currentBackStackEntryAsState()
+                            .value?.destination?.hasRoute(Screen.UserCoursesScreen::class) == true
                     else -> false
                 },
                 onClick = {
                     navController.navigate(item.screen)
                 },
                 icon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = null
-                    )
+                    when (val iconItem = item.icon) {
+                        is BottomBarIcon.Vector -> {
+                            Icon(
+                                imageVector = iconItem.icon,
+                                contentDescription = null
+                            )
+                        }
+                        is BottomBarIcon.Resource -> {
+                            Icon(
+                                painter = painterResource(iconItem.icon),
+                                contentDescription = null
+                            )
+                        }
+                    }
                 }
             )
         }

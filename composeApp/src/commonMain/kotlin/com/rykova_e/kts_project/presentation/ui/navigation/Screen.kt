@@ -20,6 +20,9 @@ sealed class Screen {
     @Serializable
     data class DetailCourseScreen(val courseId: Long) : Screen()
 
+    @Serializable
+    object UserCoursesScreen: Screen()
+
     companion object {
         const val ROUTE_DETAIL_COURSE = "route_detail_course"
     }
