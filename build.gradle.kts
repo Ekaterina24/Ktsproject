@@ -1,3 +1,5 @@
+import dev.detekt.gradle.Detekt
+
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -8,4 +10,30 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
+    id("dev.detekt") version("2.0.0-alpha.2")
+}
+
+repositories {
+    mavenCentral()
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    config.setFrom(files("$rootDir/config.yml"))
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
+}
+
+tasks.withType<Detekt>().configureEach {
+    setSource(files(rootDir))
+    include("**/*.kt")
+    exclude("**/build/**")
+
+    reports {
+        html.required.set(true)
+        sarif.required.set(true)
+    }
 }
