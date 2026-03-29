@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "59627362203",
+    "firebase_url": "https://fir-rv-9e2c2-default-rtdb.firebaseio.com",
+    "project_id": "fir-rv-9e2c2",
+    "storage_bucket": "fir-rv-9e2c2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59627362203:android:ecce2d4741ed489251b33e",
+        "android_client_info": {
+          "package_name": "com.rykova_e.kts_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaq806WDNjCdDZv58_65LbSvjFMyHwxHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,6 +10,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 kotlin {
@@ -69,6 +73,11 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.appauth)
             implementation(libs.androidx.core.ktx)
+
+            implementation(project.dependencies.platform(libs.firebase.bom))
+
+            implementation(libs.google.firebase.crashlytics)
+            implementation(libs.google.firebase.analytics)
         }
         iosMain.dependencies {
             implementation(libs.coil.network.ktor)
@@ -98,9 +107,35 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    val fileSignConfig = rootProject.file("signing.properties")
+    val releaseSigningConfig = if (fileSignConfig.exists()) {
+        val properties = Properties().apply {
+            load(fileSignConfig.reader())
+        }
+
+        val fileConfig = File(properties.getProperty("STORE_FILE"))
+
+        if (!fileConfig.exists() || fileConfig.extension != "jks") {
+            throw IllegalArgumentException("Файл подписи не найден: ${fileConfig.absolutePath}")
+        }
+
+        signingConfigs.create("release") {
+            storeFile = fileConfig
+            keyPassword = properties.getProperty("KEY_PASSWORD")
+            keyAlias = properties.getProperty("KEY_ALIAS")
+            storePassword = properties.getProperty("STORE_PASSWORD")
+        }
+    } else {
+        println("Файл конфигурации подписи не найден")
+        null
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            releaseSigningConfig?.let {
+                signingConfig = it
+            }
         }
     }
     compileOptions {
@@ -120,5 +155,6 @@ dependencies {
             add(it, libs.room.compiler)
         }
     }
+    debugImplementation(libs.leakcanary.android)
 }
 
