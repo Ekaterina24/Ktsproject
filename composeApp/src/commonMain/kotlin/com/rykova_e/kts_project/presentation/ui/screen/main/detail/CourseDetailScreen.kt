@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rykova_e.kts_project.presentation.theme.BlueColor
+import com.rykova_e.kts_project.presentation.theme.GreenColor
 import com.rykova_e.kts_project.presentation.ui.component.CircularProgressBarCustom
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,28 +71,35 @@ fun CourseDetailScreen(
                     }
                 }
 
-                Button(
-                    modifier = modifier
-                        .padding(12.dp)
-                        .fillMaxWidth()
-                    ,
-                    onClick = {
-                        viewModel.onEventCourseDetail(OnEventCourseDetail.singUpOnCourse(state.course.id))
-                    },
-                    contentPadding = PaddingValues(
-                        horizontal = 20.dp,
-                        vertical = 10.dp
-                    ),
-                    colors = ButtonColors(
-                        containerColor = BlueColor,
-                        contentColor = Color.White,
-                        disabledContainerColor = BlueColor,
-                        disabledContentColor = Color.White,
-                    ),
-                ) {
-                    Text(
-                        text = "Записаться",
-                    )
+                if (!state.course.isPaid) {
+                    Button(
+                        modifier = modifier
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        onClick = {
+                            if (!state.course.isRecord) {
+                                viewModel.onEventCourseDetail(
+                                    OnEventCourseDetail.SingUpOnCourse(
+                                        state.course.id
+                                    )
+                                )
+                            }
+                        },
+                        contentPadding = PaddingValues(
+                            horizontal = 20.dp,
+                            vertical = 10.dp
+                        ),
+                        colors = ButtonColors(
+                            containerColor = if (state.course.isRecord) GreenColor else BlueColor,
+                            contentColor = Color.White,
+                            disabledContainerColor = if (state.course.isRecord) GreenColor else BlueColor,
+                            disabledContentColor = Color.White,
+                        ),
+                    ) {
+                        Text(
+                            text = if (state.course.isRecord) "Продолжить" else "Записаться",
+                        )
+                    }
                 }
             }
         }

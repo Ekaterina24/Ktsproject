@@ -5,6 +5,7 @@ import com.rykova_e.kts_project.data.source.local.db.model.CourseWithData
 import com.rykova_e.kts_project.data.source.local.db.model.ReviewEntity
 import com.rykova_e.kts_project.data.source.remote.model.CourseRemote
 import com.rykova_e.kts_project.data.source.remote.model.MetaData
+import com.rykova_e.kts_project.data.source.remote.model.ProgressCourseRemote
 import com.rykova_e.kts_project.data.source.remote.model.ReviewRemote
 import com.rykova_e.kts_project.data.source.remote.model.SearchItem
 import com.rykova_e.kts_project.data.source.remote.model.SearchWrapper
@@ -12,6 +13,7 @@ import com.rykova_e.kts_project.data.source.remote.model.WrapperCourses
 import com.rykova_e.kts_project.domain.model.CourseDto
 import com.rykova_e.kts_project.domain.model.CourseWithDataDto
 import com.rykova_e.kts_project.domain.model.MetaDataDto
+import com.rykova_e.kts_project.domain.model.ProgressCourseDto
 import com.rykova_e.kts_project.domain.model.ReviewDto
 import com.rykova_e.kts_project.domain.model.SearchDto
 import com.rykova_e.kts_project.domain.model.WrapperCoursesDto
@@ -26,7 +28,13 @@ fun CourseRemote.toDto(): CourseDto {
         cover = this.cover,
         rating = this.rating,
         countStudents = this.countStudents,
-        duration = this.duration
+        duration = this.duration,
+        price = this.price,
+        isPaid = this.isPaid,
+        isRecord = this.isRecord != null,
+        progress = this.progress,
+        score = 0,
+        cost = 0,
     )
 }
 
@@ -77,7 +85,13 @@ fun CourseEntity.toDto(): CourseDto {
         cover = this.cover,
         rating = this.rating,
         countStudents = this.countStudents,
-        duration = this.duration
+        duration = this.duration,
+        price = this.price,
+        isPaid = this.isPaid,
+        isRecord = isRecord,
+        progress = this.progress,
+        score = this.score,
+        cost = this.cost,
     )
 }
 
@@ -89,7 +103,9 @@ fun CourseDto.toEntity(): CourseEntity {
         cover = this.cover,
         rating = this.rating,
         countStudents = this.countStudents,
-        duration = this.duration
+        duration = this.duration,
+        price = this.price,
+        isPaid = this.isPaid
     )
 }
 
@@ -116,5 +132,13 @@ fun CourseWithData.toDto(): CourseWithDataDto {
         course = this.course.toDto(),
         authors = this.authors.map { it.toDto() },
         review = this.review?.toDto()
+    )
+}
+
+fun ProgressCourseRemote.toDto(): ProgressCourseDto {
+    return ProgressCourseDto(
+        id = this.id,
+        score = this.score,
+        cost = this.cost
     )
 }

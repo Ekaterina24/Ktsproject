@@ -9,4 +9,10 @@ data class CourseDto(
     val rating: String?,
     val countStudents: Long,
     val duration: Long?,
+    val price: String?,
+    val isPaid: Boolean,
+    val isRecord: Boolean,
+    val progress: String?,
+    val score: Int,
+    val cost: Int
 )

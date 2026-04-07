@@ -2,6 +2,7 @@ package com.rykova_e.kts_project.data.source.remote
 
 import com.rykova_e.kts_project.data.mapper.toDto
 import com.rykova_e.kts_project.domain.model.CourseDto
+import com.rykova_e.kts_project.domain.model.ProgressCourseDto
 import com.rykova_e.kts_project.domain.model.ReviewDto
 import com.rykova_e.kts_project.domain.model.WrapperCoursesDto
 import com.rykova_e.kts_project.domain.model.WrapperSearchCoursesDto
@@ -19,7 +20,19 @@ class CourseRepositoryImpl(
     }
 
     override suspend fun getCourseById(id: Long): CourseDto {
-        return apiService.getCourseById(id).courses.first().toDto()
+        val course = apiService.getCourseById(id).courses.first().toDto()
+        val progressId = course.progress ?: return course
+        val progressData = getProgressCourseById(progressId)
+
+        val percentProgress = if (progressData.cost > 0) {
+            progressData.score / progressData.cost.toFloat()
+        } else 0f
+
+        return course.copy(
+            progress = percentProgress.toString(),
+            score = progressData.score.toInt(),
+            cost = progressData.cost
+        )
     }
 
     override suspend fun getCoursesByIds(ids: List<Long>): List<CourseDto> {
@@ -54,5 +67,9 @@ class CourseRepositoryImpl(
 
     override suspend fun singUpOnCourse(courseId: Long) {
         apiService.singUpOnCourse(courseId)
+    }
+
+    override suspend fun getProgressCourseById(idProgress: String): ProgressCourseDto {
+        return apiService.getProgressCourseById(idProgress).progresses.first().toDto()
     }
 }

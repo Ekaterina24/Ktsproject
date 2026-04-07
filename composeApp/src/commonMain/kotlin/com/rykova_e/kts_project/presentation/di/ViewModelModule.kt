@@ -3,6 +3,7 @@ package com.rykova_e.kts_project.presentation.di
 import com.rykova_e.kts_project.presentation.ui.screen.login.LoginViewModelCommon
 import com.rykova_e.kts_project.presentation.ui.screen.main.MainViewModel
 import com.rykova_e.kts_project.presentation.ui.screen.main.detail.CourseDetailViewModel
+import com.rykova_e.kts_project.presentation.ui.screen.my_courses.UserCoursesViewModel
 import com.rykova_e.kts_project.presentation.ui.screen.profile.UserProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -31,7 +32,7 @@ val platformViewModelModule = module {
         UserProfileViewModel(
             dataStore = get(),
             userRepository = get(),
-            courseRepositoryLocal = get()
+            courseRepositoryLocal = get(),
         )
     }
 
@@ -40,6 +41,14 @@ val platformViewModelModule = module {
             courseId = parameters.get<Long>(),
             getCourseRepositoryCommonImpl = get(),
             singUpOnCourseUseCase = get(),
+        )
+    }
+
+    viewModel {
+        UserCoursesViewModel(
+            getUserCoursesUseCase = get(),
+            courseRepository = get(),
+            userRepository = get()
         )
     }
 }

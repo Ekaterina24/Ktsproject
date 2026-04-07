@@ -34,4 +34,22 @@ data class CourseEntity(
 
     @ColumnInfo(name = "duration")
     val duration: Long?,
+
+    @ColumnInfo(name = "price")
+    val price: String? = null,
+
+    @ColumnInfo(name = "is_free")
+    val isPaid: Boolean = false,
+
+    @ColumnInfo(name = "is_record")
+    val isRecord: Boolean = false,
+
+    @ColumnInfo(name = "progress")
+    val progress: String? = null,
+
+    @ColumnInfo(name = "score")
+    val score: Int = 0,
+
+    @ColumnInfo(name = "cost")
+    val cost: Int = 0,
 )

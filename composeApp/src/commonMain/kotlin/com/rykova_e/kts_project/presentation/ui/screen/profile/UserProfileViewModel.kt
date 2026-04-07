@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class UserProfileViewModel(
     private val dataStore: SettingsStorage,
     private val userRepository: UserRepository,
-    private val courseRepositoryLocal: CourseRepositoryLocal
+    private val courseRepositoryLocal: CourseRepositoryLocal,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(UserProfileState())

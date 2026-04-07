@@ -9,11 +9,21 @@ import com.rykova_e.kts_project.presentation.theme.BlueColor
 
 @Composable
 fun CircularProgressBarCustom(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    progress: Float? = null
 ) {
-    CircularProgressIndicator(
-        modifier = modifier.size(50.dp),
-        color = BlueColor,
-        strokeWidth = 5.dp
-    )
+    if (progress == null) {
+        CircularProgressIndicator(
+            modifier = modifier.size(50.dp),
+            color = BlueColor,
+            strokeWidth = 5.dp,
+        )
+    } else {
+        CircularProgressIndicator(
+            modifier = modifier.size(50.dp),
+            color = BlueColor,
+            strokeWidth = 5.dp,
+            progress = { progress }
+        )
+    }
 }

@@ -1,6 +1,7 @@
 package com.rykova_e.kts_project.presentation.ui.screen.profile
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -64,7 +65,8 @@ fun UserProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(20.dp)
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Row(
                         modifier = Modifier.heightIn(max = 100.dp),

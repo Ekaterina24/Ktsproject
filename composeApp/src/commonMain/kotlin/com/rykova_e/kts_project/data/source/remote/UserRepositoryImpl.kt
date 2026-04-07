@@ -1,6 +1,7 @@
 package com.rykova_e.kts_project.data.source.remote
 
 import com.rykova_e.kts_project.data.mapper.toDto
+import com.rykova_e.kts_project.domain.model.UserCoursesDto
 import com.rykova_e.kts_project.domain.model.UserDto
 import com.rykova_e.kts_project.domain.model.UserProfileDto
 import com.rykova_e.kts_project.domain.repository.UserRepository
@@ -9,7 +10,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
 class UserRepositoryImpl(
-    private val apiService: ApiService
+    private val apiService: ApiService,
 ): UserRepository {
 
     override suspend fun getUsersByIds(ids: List<Long>): List<UserDto> {
@@ -31,5 +32,7 @@ class UserRepositoryImpl(
         return apiService.getUserProfile().users.first().toDto()
     }
 
-
+    override suspend fun getUserCourses(): List<UserCoursesDto> {
+        return apiService.getUserCourses().courses.map { it.toDto() }
+    }
 }

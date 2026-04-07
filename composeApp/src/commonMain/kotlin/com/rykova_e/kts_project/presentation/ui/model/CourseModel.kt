@@ -9,5 +9,11 @@ data class CourseModel(
     val rating: String? = null,
     val countStudents: Long = 0L,
     val duration: Long? = null,
-    val countReviews: Int? = null
+    val countReviews: Int? = null,
+    val price: String? = null,
+    val isPaid: Boolean = true,
+    val isRecord: Boolean = false,
+    val percentProgress: String? = null,
+    val score: Int = 0,
+    val cost: Int = 0
 )

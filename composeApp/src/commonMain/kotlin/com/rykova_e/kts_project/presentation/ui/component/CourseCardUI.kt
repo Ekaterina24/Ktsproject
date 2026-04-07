@@ -41,8 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.rykova_e.kts_project.presentation.theme.AppThemeMaterial
+import com.rykova_e.kts_project.presentation.theme.GreenColor
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import com.rykova_e.kts_project.presentation.ui.model.UserModel
+import kotlin.math.roundToInt
 
 @Composable
 fun CourseCardUI(
@@ -123,7 +125,11 @@ fun CourseCardUI(
                 }
             }
 
-            Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row {
                     model.rating?.let { rating ->
                         ParameterCountUI(
@@ -153,6 +159,32 @@ fun CourseCardUI(
                         contentDescription = null,
                         tint = Color.Gray,
                     )
+                }
+                when {
+                    model.price != null -> {
+                        Text(
+                            text = "${model.price.toFloat().roundToInt()} р",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    model.isRecord -> {
+                        Text(
+                            text = "Вы записаны",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    else -> {
+                        Text(
+                            text = "Бесплатно",
+                            color = GreenColor,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
         }
