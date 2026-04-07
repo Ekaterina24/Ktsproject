@@ -9,4 +9,5 @@ data class CourseModel(
     val rating: String? = null,
     val countStudents: Long = 0L,
     val duration: Long? = null,
+    val countReviews: Int? = null
 )

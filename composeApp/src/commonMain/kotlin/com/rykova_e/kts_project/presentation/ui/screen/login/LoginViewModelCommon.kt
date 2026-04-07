@@ -1,7 +1,7 @@
 package com.rykova_e.kts_project.presentation.ui.screen.login
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
 import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.domain.repository.PlatformAuthService
 import com.rykova_e.kts_project.domain.repository.PlatformIntent
@@ -18,70 +18,33 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-object LoginFactory {
-    lateinit var authUseCase: AuthUseCase
-    lateinit var platformAuthService: PlatformAuthService
-    lateinit var toastChannel: PlatformChannel<String>
-    lateinit var openAuthPageChannel: PlatformChannel<PlatformIntent>
-    lateinit var authSuccessChannel: PlatformChannel<Unit>
-    var customTabsIntentProvider: (() -> Any?)? = { null }
-
-    fun init(
-        authUseCase: AuthUseCase,
-        platformAuthService: PlatformAuthService,
-        toastChannel: PlatformChannel<String>,
-        openAuthPageChannel: PlatformChannel<PlatformIntent>,
-        authSuccessChannel: PlatformChannel<Unit>,
-        customTabsIntentProvider: (() -> Any?)? = null
-    ) {
-        LoginFactory.authUseCase = authUseCase
-        LoginFactory.platformAuthService = platformAuthService
-        LoginFactory.toastChannel = toastChannel
-        LoginFactory.openAuthPageChannel = openAuthPageChannel
-        LoginFactory.authSuccessChannel = authSuccessChannel
-        LoginFactory.customTabsIntentProvider = customTabsIntentProvider
-    }
-
-    fun createViewModel(): LoginViewModelCommon {
-        return LoginViewModelCommon(
-            authUseCase = authUseCase,
-            platformAuthService = platformAuthService,
-            toastChannel = toastChannel,
-            openAuthPageChannel = openAuthPageChannel,
-            authSuccessChannel = authSuccessChannel,
-            customTabsIntentProvider = customTabsIntentProvider
-        )
-    }
-}
-
 class LoginViewModelCommon(
     private val authUseCase: AuthUseCase,
     private val platformAuthService: PlatformAuthService,
     private val toastChannel: PlatformChannel<String>,
     private val openAuthPageChannel: PlatformChannel<PlatformIntent>,
     private val authSuccessChannel: PlatformChannel<Unit>,
-    private val customTabsIntentProvider: (() -> Any?)? = null,
-    private val dataStore: SettingsStorage = DataStoreSettingsStorage()
-) : LoginViewModel() {
+    private val dataStore: SettingsStorage
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginUiState())
-    override val state = _state.asStateFlow()
+    val state = _state.asStateFlow()
 
     private val _loadingFlow = MutableStateFlow(false)
-    override val loadingFlow: StateFlow<Boolean> = _loadingFlow.asStateFlow()
+    val loadingFlow: StateFlow<Boolean> = _loadingFlow.asStateFlow()
 
-    override val authSuccessFlow: Flow<Unit> = authSuccessChannel.receiveAsFlow()
-    override val toastFlow: Flow<String> = toastChannel.receiveAsFlow()
-    override val openAuthPageFlow: Flow<PlatformIntent> = openAuthPageChannel.receiveAsFlow()
+    val authSuccessFlow: Flow<Unit> = authSuccessChannel.receiveAsFlow()
+    val toastFlow: Flow<String> = toastChannel.receiveAsFlow()
+    val openAuthPageFlow: Flow<PlatformIntent> = openAuthPageChannel.receiveAsFlow()
 
     private val _events = MutableSharedFlow<LoginUiEvent?>()
-    override val events = _events.asSharedFlow()
+    val events = _events.asSharedFlow()
 
-    override fun login() {
+    fun login() {
         openLoginPage()
     }
 
-    override fun exchangeCodeForTokens() {
+    fun exchangeCodeForTokens() {
         viewModelScope.launch {
             _loadingFlow.value = true
             runCatching {
@@ -106,16 +69,16 @@ class LoginViewModelCommon(
 
     private fun openLoginPage() {
         val authRequest = authUseCase.getAuthRequest()
-        val intent = platformAuthService.getAuthorizationRequestIntent(authRequest, customTabsIntentProvider?.invoke())
+        val intent = platformAuthService.getAuthorizationRequestIntent(authRequest)
         openAuthPageChannel.send(intent)
         onLoginStateEvent(LoginStateEvent.OnChangedShowInputCode(true))
     }
 
-    override fun onAuthCodeFailed() {
+    fun onAuthCodeFailed() {
         toastChannel.send("Авторизация отменена")
     }
 
-    override fun onLoginStateEvent(event: LoginStateEvent) {
+    fun onLoginStateEvent(event: LoginStateEvent) {
         when (event) {
             LoginStateEvent.OnOpenLoginPage -> login()
             is LoginStateEvent.OnChangedCode -> _state.update { it.copy(code = event.value) }

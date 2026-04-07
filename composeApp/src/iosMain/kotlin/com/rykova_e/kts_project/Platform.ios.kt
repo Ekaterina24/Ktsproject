@@ -3,6 +3,8 @@ package com.rykova_e.kts_project
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.rykova_e.kts_project.data.source.local.db.AppDatabase
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.darwin.Darwin
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
@@ -24,3 +26,5 @@ actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
     val dbFile = NSHomeDirectory() + "/Documents/app-database"
     return Room.databaseBuilder<AppDatabase>(name = dbFile)
 }
+
+actual fun provideEngine(): HttpClientEngine = Darwin.create()

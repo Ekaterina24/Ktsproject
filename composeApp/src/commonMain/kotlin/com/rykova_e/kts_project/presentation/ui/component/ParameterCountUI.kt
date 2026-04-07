@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +24,9 @@ import com.rykova_e.kts_project.presentation.theme.AppThemeMaterial
 fun ParameterCountUI(
     modifier: Modifier = Modifier,
     value: String,
-    imageVector: ImageVector
+    imageVector: ImageVector,
+    colorText: Color = Color.Gray,
+    tintIcon: Color? = null
 ) {
     Row(
         modifier = modifier.padding(horizontal = 4.dp),
@@ -35,12 +38,12 @@ fun ParameterCountUI(
                 .size(12.dp),
             imageVector = imageVector,
             contentDescription = null,
-            tint = Color.Gray,
+            tint = tintIcon ?: LocalContentColor.current,
         )
         Text(
             text = value,
             fontSize = 12.sp,
-            color = Color.Gray
+            color = colorText
         )
     }
 }
@@ -53,6 +56,7 @@ private fun ParameterCountUIPreview() {
             ParameterCountUI(
                 value = "5",
                 imageVector = Icons.Outlined.Star,
+                tintIcon = Color.Gray
             )
         }
     }

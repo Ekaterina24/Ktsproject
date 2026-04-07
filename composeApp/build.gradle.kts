@@ -57,6 +57,9 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.androidx.room.sqlite.wrapper)
             implementation(libs.coil.svg)
+
+            implementation(libs.insert.koin.koin.core)
+            implementation(libs.koin.androidx.compose)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)

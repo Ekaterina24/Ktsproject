@@ -15,14 +15,13 @@ class AndroidPlatformAuthService(
     val service: AuthorizationService
 ) : PlatformAuthService {
     override fun getAuthorizationRequestIntent(
-        authRequest: AuthRequest,
-        customTabsIntent: Any?
+        authRequest: AuthRequest
     ): PlatformIntent {
-        val androidCustomTabs = customTabsIntent as CustomTabsIntent
+        val customTabsIntent = CustomTabsIntent.Builder().build()
 
         val intent = service.getAuthorizationRequestIntent(
             authRequest,
-            androidCustomTabs
+            customTabsIntent
         )
 
         return PlatformIntent(intent)

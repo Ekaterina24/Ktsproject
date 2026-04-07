@@ -12,12 +12,12 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.rykova_e.kts_project.presentation.ui.navigation.Screen
@@ -52,9 +52,17 @@ fun BottomNavigationBar(navController: NavController) {
     ) {
         bottomBarDestinations.forEach { item ->
             NavigationBarItem(
-                selected = item.screen.route == currentRoute(navController),
+                selected = when (item.screen) {
+                    is Screen.MainScreen ->
+                        navController.currentBackStackEntryAsState()
+                            .value?.destination?.hasRoute(Screen.MainScreen::class) == true
+                    is Screen.ProfileScreen ->
+                        navController.currentBackStackEntryAsState()
+                            .value?.destination?.hasRoute(Screen.ProfileScreen::class) == true
+                    else -> false
+                },
                 onClick = {
-                    navController.navigate(item.screen.route)
+                    navController.navigate(item.screen)
                 },
                 icon = {
                     Icon(
@@ -65,12 +73,6 @@ fun BottomNavigationBar(navController: NavController) {
             )
         }
     }
-}
-
-@Composable
-fun currentRoute(navController: NavController): String? {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.route
 }
 
 @Preview

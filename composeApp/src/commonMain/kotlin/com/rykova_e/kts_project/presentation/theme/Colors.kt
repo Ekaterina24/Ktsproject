@@ -3,6 +3,7 @@ package com.rykova_e.kts_project.presentation.theme
 import androidx.compose.ui.graphics.Color
 
 val BlueColor = Color(0xFF008CF0)
+val BlueDarkColor = Color(0xFF100644)
 
 //Светлая тема
 val md_theme_light_background = Color(0xFFFFFFFF)

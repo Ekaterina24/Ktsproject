@@ -10,15 +10,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
-class CourseRepositoryImpl: CourseRepository {
-
-    private val apiService = ApiService(Networking.httpClient)
+class CourseRepositoryImpl(
+    private val apiService: ApiService
+): CourseRepository {
 
     override suspend fun getCourses(page: Int): WrapperCoursesDto {
         return apiService.getCourses(page).toDto()
     }
 
-    override suspend fun getCourse(id: Long): CourseDto {
+    override suspend fun getCourseById(id: Long): CourseDto {
         return apiService.getCourseById(id).courses.first().toDto()
     }
 
@@ -26,7 +26,7 @@ class CourseRepositoryImpl: CourseRepository {
         return coroutineScope {
             val courses = ids.map { id ->
                 async {
-                    getCourse(id)
+                    getCourseById(id)
                 }
             }
             courses.awaitAll()
@@ -50,5 +50,9 @@ class CourseRepositoryImpl: CourseRepository {
             }
             reviews.awaitAll()
         }
+    }
+
+    override suspend fun singUpOnCourse(courseId: Long) {
+        apiService.singUpOnCourse(courseId)
     }
 }

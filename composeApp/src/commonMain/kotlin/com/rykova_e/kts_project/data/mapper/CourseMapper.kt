@@ -63,7 +63,8 @@ fun ReviewRemote.toDto(): ReviewDto {
     return ReviewDto(
         id = this.id,
         courseId = this.courseId,
-        averageReview = this.averageReview
+        averageReview = this.averageReview,
+        count = this.count
     )
 }
 
@@ -96,7 +97,8 @@ fun ReviewEntity.toDto(): ReviewDto {
     return ReviewDto(
         id = this.reviewId,
         courseId = this.courseId.toString(),
-        averageReview = this.averageReview
+        averageReview = this.averageReview,
+        count = this.count
     )
 }
 
@@ -105,7 +107,7 @@ fun ReviewDto.toEntity(): ReviewEntity {
         reviewId = this.id,
         courseId = this.courseId.toLong(),
         averageReview = this.averageReview,
-        count = 0
+        count = this.count
     )
 }
 

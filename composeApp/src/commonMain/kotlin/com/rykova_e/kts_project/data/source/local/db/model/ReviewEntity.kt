@@ -24,5 +24,5 @@ data class ReviewEntity(
     val averageReview: String,
 
     @ColumnInfo(name = "count")
-    val count: Long,
+    val count: Int,
 )

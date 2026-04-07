@@ -14,23 +14,26 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
+import androidx.navigation.toRoute
+import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
 import com.rykova_e.kts_project.presentation.theme.AppThemeMaterial
 import com.rykova_e.kts_project.presentation.ui.component.CustomLoader
 import com.rykova_e.kts_project.presentation.ui.navigation.Screen
-import com.rykova_e.kts_project.presentation.ui.navigation.Screen.Companion.MAIN_GRAPH
 import com.rykova_e.kts_project.presentation.ui.screen.login.LoginScreen
 import com.rykova_e.kts_project.presentation.ui.screen.main.CourseListScreen
 import com.rykova_e.kts_project.presentation.ui.screen.main.MainContainer
+import com.rykova_e.kts_project.presentation.ui.screen.main.detail.CourseDetailScreen
 import com.rykova_e.kts_project.presentation.ui.screen.onboarding.OnBoardingScreen
 import com.rykova_e.kts_project.presentation.ui.screen.profile.UserProfileScreen
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
+    private val dataStore: SettingsStorage by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -42,8 +45,8 @@ class MainActivity : ComponentActivity() {
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 var isLoading by remember { mutableStateOf(true) }
-                var startDestination by remember { mutableStateOf("") }
-                val dataStore = remember { DataStoreSettingsStorage() }
+                var startDestination by remember { mutableStateOf<Screen>(Screen.OnboardingScreen) }
+
                 val firstOpen by dataStore.observeFirstOpen()
                     .collectAsStateWithLifecycle(initialValue = true)
 
@@ -55,9 +58,9 @@ class MainActivity : ComponentActivity() {
                     delay(500)
 
                     startDestination = when {
-                        loggedIn.isNotEmpty() -> MAIN_GRAPH
-                        firstOpen -> Screen.OnboardingScreen.route
-                        else -> Screen.LoginScreen.route
+                        loggedIn.isNotEmpty() -> Screen.MainScreen
+                        firstOpen -> Screen.OnboardingScreen
+                        else -> Screen.LoginScreen
                     }
                     isLoading = false
                 }
@@ -70,7 +73,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = startDestination
                         ) {
-                            composable(Screen.OnboardingScreen.route) {
+                            composable<Screen.OnboardingScreen> {
                                 var isNextNavigate by remember { mutableStateOf(false) }
 
                                 LaunchedEffect(isNextNavigate) {
@@ -80,48 +83,58 @@ class MainActivity : ComponentActivity() {
                                 OnBoardingScreen(
                                     navigateToLoginScreen = {
                                         isNextNavigate = true
-                                        navController.navigate(Screen.LoginScreen.route) {
-                                            popUpTo(Screen.OnboardingScreen.route) {
+                                        navController.navigate(Screen.LoginScreen) {
+                                            popUpTo(Screen.OnboardingScreen) {
                                                 inclusive = true
                                             }
                                         }
                                     }
                                 )
                             }
-                            composable(Screen.LoginScreen.route) {
+                            composable<Screen.LoginScreen> {
                                 LoginScreen(
                                     snackbarHostState = snackbarHostState,
                                     navController = navController
                                 )
                             }
 
-                            navigation(
-                                route = MAIN_GRAPH,
-                                startDestination = Screen.MainScreen.route
-                            ) {
-                                composable(Screen.MainScreen.route) {
-                                    MainContainer(
-                                        content = { modifier ->
-                                            CourseListScreen(
-                                                modifier = modifier,
-                                            )
-                                        },
-                                        navController = navController
-                                    )
-                                }
-                                composable(Screen.ProfileScreen.route) {
-                                    MainContainer(
-                                        content = { modifier ->
-                                            UserProfileScreen(
-                                                modifier = modifier,
-                                                navigateToLogin = {
-                                                    navController.navigate(Screen.LoginScreen.route)
-                                                }
-                                            )
-                                        },
-                                        navController = navController
-                                    )
-                                }
+                            composable<Screen.MainScreen> {
+                                MainContainer(
+                                    content = { modifier ->
+                                        CourseListScreen(
+                                            modifier = modifier,
+                                            navController = navController
+                                        )
+                                    },
+                                    navController = navController
+                                )
+                            }
+                            composable<Screen.ProfileScreen> {
+                                MainContainer(
+                                    content = { modifier ->
+                                        UserProfileScreen(
+                                            modifier = modifier,
+                                            navigateToLogin = {
+                                                navController.navigate(Screen.LoginScreen)
+                                            }
+                                        )
+                                    },
+                                    navController = navController
+                                )
+                            }
+
+                            composable<Screen.DetailCourseScreen> { backStackEntry ->
+                                val courseId = backStackEntry.toRoute<Screen.DetailCourseScreen>().courseId
+                                MainContainer(
+                                    content = { modifier ->
+                                        CourseDetailScreen(
+                                            modifier = modifier,
+                                            courseId = courseId,
+                                            snackbarHostState = snackbarHostState
+                                        )
+                                    },
+                                    navController = navController
+                                )
                             }
                         }
                     }

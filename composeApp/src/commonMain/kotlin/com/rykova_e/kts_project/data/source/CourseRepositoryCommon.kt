@@ -2,11 +2,11 @@ package com.rykova_e.kts_project.data.source
 
 import com.rykova_e.kts_project.data.source.local.db.model.CourseAuthorCrossRef
 import com.rykova_e.kts_project.data.source.local.db.model.CourseReviewCrossRef
-import com.rykova_e.kts_project.data.source.local.db.repository.CourseRepositoryLocalImpl
-import com.rykova_e.kts_project.data.source.local.db.repository.ReviewRepositoryLocalImpl
-import com.rykova_e.kts_project.data.source.local.db.repository.UserRepositoryLocalImpl
-import com.rykova_e.kts_project.data.source.remote.CourseRepositoryImpl
-import com.rykova_e.kts_project.data.source.remote.UserRepositoryImpl
+import com.rykova_e.kts_project.domain.repository.CourseRepository
+import com.rykova_e.kts_project.domain.repository.UserRepository
+import com.rykova_e.kts_project.domain.repository.local.CourseRepositoryLocal
+import com.rykova_e.kts_project.domain.repository.local.ReviewRepositoryLocal
+import com.rykova_e.kts_project.domain.repository.local.UserRepositoryLocal
 import com.rykova_e.kts_project.presentation.ui.mapper.toCommonCourseUI
 import com.rykova_e.kts_project.presentation.ui.mapper.toDto
 import com.rykova_e.kts_project.presentation.ui.mapper.toUI
@@ -14,14 +14,13 @@ import com.rykova_e.kts_project.presentation.ui.model.CommonCourses
 import com.rykova_e.kts_project.presentation.ui.model.CourseModel
 import com.rykova_e.kts_project.utils.roundToDecimal
 
-class CourseRepositoryCommonImpl {
-    private val courseRepository = CourseRepositoryImpl()
-    private val courseRepositoryLocal = CourseRepositoryLocalImpl()
-
-    private val userRepository = UserRepositoryImpl()
-    private val userRepositoryLocal = UserRepositoryLocalImpl()
-    private val reviewRepositoryLocal = ReviewRepositoryLocalImpl()
-
+class CourseRepositoryCommonImpl(
+    private val courseRepository: CourseRepository,
+    private val courseRepositoryLocal: CourseRepositoryLocal,
+    private val userRepository: UserRepository,
+    private val userRepositoryLocal: UserRepositoryLocal,
+    private val reviewRepositoryLocal: ReviewRepositoryLocal,
+) {
 
     suspend fun getCoursesLocalOrNetwork(search: String, page: Int = 1, online: Boolean): CommonCourses {
         val query = search.trim()

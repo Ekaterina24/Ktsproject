@@ -2,26 +2,23 @@ package com.rykova_e.kts_project.presentation.ui.screen.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
 import com.rykova_e.kts_project.data.source.local.data_store.SettingsStorage
-import com.rykova_e.kts_project.data.source.local.db.repository.CourseRepositoryLocalImpl
-import com.rykova_e.kts_project.data.source.remote.UserRepositoryImpl
+import com.rykova_e.kts_project.domain.repository.UserRepository
+import com.rykova_e.kts_project.domain.repository.local.CourseRepositoryLocal
 import com.rykova_e.kts_project.presentation.ui.mapper.toUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class UserProfileViewModel: ViewModel() {
-
-    private val dataStore: SettingsStorage = DataStoreSettingsStorage()
-
-    private val userRepository = UserRepositoryImpl()
-    private val courseRepositoryLocal = CourseRepositoryLocalImpl()
+class UserProfileViewModel(
+    private val dataStore: SettingsStorage,
+    private val userRepository: UserRepository,
+    private val courseRepositoryLocal: CourseRepositoryLocal
+): ViewModel() {
 
     private val _state = MutableStateFlow(UserProfileState())
     val state = _state.asStateFlow()
-
 
     fun getProfileData() {
         viewModelScope.launch {
