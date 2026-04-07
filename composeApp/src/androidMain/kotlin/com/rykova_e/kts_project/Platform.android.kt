@@ -8,6 +8,7 @@ import android.net.NetworkRequest
 import android.os.Build
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rykova_e.kts_project.data.source.local.db.AppDatabase
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
@@ -65,3 +66,9 @@ actual class NetworkMonitor {
 }
 
 actual fun provideEngine(): HttpClientEngine = OkHttp.create()
+
+actual object CrashLogger {
+    actual fun logError(throwable: Throwable) {
+        FirebaseCrashlytics.getInstance().recordException(throwable)
+    }
+}

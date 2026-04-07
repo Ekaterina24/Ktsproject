@@ -19,3 +19,7 @@ expect class NetworkMonitor {
 }
 
 expect fun provideEngine(): HttpClientEngine
+
+expect object CrashLogger {
+    fun logError(throwable: Throwable)
+}

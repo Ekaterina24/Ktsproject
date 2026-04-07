@@ -2,6 +2,7 @@ package com.rykova_e.kts_project.presentation.ui.screen.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rykova_e.kts_project.CrashLogger
 import com.rykova_e.kts_project.NetworkMonitor
 import com.rykova_e.kts_project.data.source.CourseRepositoryCommonImpl
 import io.github.aakira.napier.Napier
@@ -71,6 +72,7 @@ class MainViewModel(
             }.onFailure { error ->
                 if (error is CancellationException) throw error
                 _state.update { it.copy(error = "Ошибка при получении курсов", isRefreshing = false) }
+                CrashLogger.logError(error)
                 Napier.e("LoadCourses error", error, tag = "Network")
                 _state.update {
                     it.copy(
