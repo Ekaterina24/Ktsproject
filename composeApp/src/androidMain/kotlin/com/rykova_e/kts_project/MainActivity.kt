@@ -4,103 +4,129 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.rykova_e.kts_project.navigation.Screen
-import com.rykova_e.kts_project.presentation.ui.screen.greeting.GreetingScreen
+import com.rykova_e.kts_project.data.source.local.data_store.DataStoreSettingsStorage
+import com.rykova_e.kts_project.presentation.theme.AppThemeMaterial
+import com.rykova_e.kts_project.presentation.ui.component.CustomLoader
+import com.rykova_e.kts_project.presentation.ui.navigation.Screen
+import com.rykova_e.kts_project.presentation.ui.navigation.Screen.Companion.MAIN_GRAPH
 import com.rykova_e.kts_project.presentation.ui.screen.login.LoginScreen
-import com.rykova_e.kts_project.presentation.ui.screen.login.LoginUiEvent
-import com.rykova_e.kts_project.presentation.ui.screen.login.LoginViewModel
-import com.rykova_e.kts_project.presentation.ui.screen.main.MainScreen
-import com.rykova_e.kts_project.presentation.ui.screen.main.MainViewModel
-import com.rykova_e.kts_project.theme.AppThemeMaterial
-import kotlinx.coroutines.launch
+import com.rykova_e.kts_project.presentation.ui.screen.main.CourseListScreen
+import com.rykova_e.kts_project.presentation.ui.screen.main.MainContainer
+import com.rykova_e.kts_project.presentation.ui.screen.onboarding.OnBoardingScreen
+import com.rykova_e.kts_project.presentation.ui.screen.profile.UserProfileScreen
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
+        initContext(this)
+        Napier.base(DebugAntilog())
         setContent {
             AppThemeMaterial {
-                MaterialTheme {
-                    val navController = rememberNavController()
-                    val snackbarHostState = remember { SnackbarHostState() }
-                    val scope = rememberCoroutineScope()
+                val navController = rememberNavController()
+                val snackbarHostState = remember { SnackbarHostState() }
 
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.GreetingScreen.route
-                    ) {
-                        composable(Screen.GreetingScreen.route) {
-                            GreetingScreen(
-                                navigateToLoginScreen = {
-                                    navController.navigate(Screen.LoginScreen.route) {
-                                        popUpTo(Screen.GreetingScreen.route) { inclusive = true }
-                                    }
+                var isLoading by remember { mutableStateOf(true) }
+                var startDestination by remember { mutableStateOf("") }
+                val dataStore = remember { DataStoreSettingsStorage() }
+                val firstOpen by dataStore.observeFirstOpen()
+                    .collectAsStateWithLifecycle(initialValue = true)
+
+                val loggedIn by dataStore.observeAccessToken()
+                    .collectAsStateWithLifecycle(initialValue = "")
+
+                LaunchedEffect(firstOpen, loggedIn) {
+                    isLoading = true
+                    delay(500)
+
+                    startDestination = when {
+                        loggedIn.isNotEmpty() -> MAIN_GRAPH
+                        firstOpen -> Screen.OnboardingScreen.route
+                        else -> Screen.LoginScreen.route
+                    }
+                    isLoading = false
+                }
+
+                Box {
+                    if (isLoading) {
+                        CustomLoader()
+                    } else {
+                        NavHost(
+                            navController = navController,
+                            startDestination = startDestination
+                        ) {
+                            composable(Screen.OnboardingScreen.route) {
+                                var isNextNavigate by remember { mutableStateOf(false) }
+
+                                LaunchedEffect(isNextNavigate) {
+                                    if (isNextNavigate) dataStore.setFirstOpen()
                                 }
-                            )
-                        }
-                        composable(Screen.LoginScreen.route) {
-                            val viewModel = viewModel { LoginViewModel() }
-                            val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            LaunchedEffect(Unit) {
-                                viewModel.events.collect { event ->
-                                    when (event) {
-                                        LoginUiEvent.LoginSuccessEvent -> navController.navigate(
-                                            Screen.MainScreen.route
-                                        ) {
-                                            popUpTo(Screen.LoginScreen.route) { inclusive = true }
-                                        }
-
-                                        is LoginUiEvent.LoginErrorEvent -> {
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(message = event.message)
+                                OnBoardingScreen(
+                                    navigateToLoginScreen = {
+                                        isNextNavigate = true
+                                        navController.navigate(Screen.LoginScreen.route) {
+                                            popUpTo(Screen.OnboardingScreen.route) {
+                                                inclusive = true
                                             }
                                         }
-
-                                        null -> {}
                                     }
+                                )
+                            }
+                            composable(Screen.LoginScreen.route) {
+                                LoginScreen(
+                                    snackbarHostState = snackbarHostState,
+                                    navController = navController
+                                )
+                            }
+
+                            navigation(
+                                route = MAIN_GRAPH,
+                                startDestination = Screen.MainScreen.route
+                            ) {
+                                composable(Screen.MainScreen.route) {
+                                    MainContainer(
+                                        content = { modifier ->
+                                            CourseListScreen(
+                                                modifier = modifier,
+                                            )
+                                        },
+                                        navController = navController
+                                    )
+                                }
+                                composable(Screen.ProfileScreen.route) {
+                                    MainContainer(
+                                        content = { modifier ->
+                                            UserProfileScreen(
+                                                modifier = modifier,
+                                                navigateToLogin = {
+                                                    navController.navigate(Screen.LoginScreen.route)
+                                                }
+                                            )
+                                        },
+                                        navController = navController
+                                    )
                                 }
                             }
-                            LoginScreen(
-                                snackbarHostState = snackbarHostState,
-                                state = state,
-                                onUsernameChanged = viewModel::onUsernameChanged,
-                                onPasswordChanged = viewModel::onPasswordChanged,
-                                login = viewModel::login
-                            )
-                        }
-                        composable(Screen.MainScreen.route) {
-                            val viewModel = viewModel { MainViewModel() }
-                            val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            MainScreen(
-                                state = state,
-                                loadPosts = viewModel::loadPosts
-                            )
                         }
                     }
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
 }
